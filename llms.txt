@@ -1,0 +1,66 @@
+# jjrc.dev
+
+Name: Javier Rivera
+Role: Full Stack Developer
+Experience: 25+ years
+Location: Chile
+
+Summary:
+Javier Rivera is a senior full stack developer with over 25 years of experience building digital products, software architecture, ecommerce integrations, WordPress security solutions, and AI-assisted development workflows.
+
+Core strengths:
+- Software architecture
+- Full stack development
+- Ecommerce platforms and integrations
+- Custom APIs
+- WordPress security, incident recovery, and headless architecture
+- AI-assisted product development
+
+Professional timeline:
+- 2000s: Web development with PHP and MySQL, international freelance projects
+- 2010s: Technical leadership, software architecture, project management
+- 2020s: Ecommerce integrations, payments, logistics, automation
+- Current: AI-assisted development, prototyping, automation, deployment workflows
+
+Technology areas:
+- Backend: PHP, Node.js, Python, Laravel, Express, FastAPI
+- Frontend: JavaScript, modern UI implementation, responsive web interfaces
+- Ecommerce: Shopify, WooCommerce, Magento, Prestashop
+- CMS: WordPress, Payload, Strapi
+- Databases: MySQL, MariaDB, SQL Server
+- Infra: Apache, Nginx, Docker, AWS, Azure, Google Cloud, Cloudflare
+- Tooling: GitHub, VS Code, Postman, Insomnia, n8n
+- AI tools: ChatGPT, GitHub Copilot, Claude Code, Ollama
+
+Business domains:
+- Education
+- Retail
+- Healthcare and pharma
+- Real estate and construction
+- Automotive
+- Finance
+- Government
+- Tourism
+
+Client testimonials (/#testimonials):
+- Hernán Cortés, Jefe de Departamento TIC at Recasur — praises backend API/plugin/ecommerce integration work and business-to-solution translation
+- Eudo García, Jefe de Tecnología e Innovación at Turistik — praises technical solidity, ownership of a business-critical ecommerce platform
+- Manuel Pérez de Arce, Encargado de Proyectos y Procesos at Tepillé — praises turning around a stalled project and shipping it to production
+- More testimonials are added over time; displayed as a 3-per-view carousel on the site
+
+Resources (/#recursos):
+- WordPress Security Guide (free PDF): /recursos/seguridad-wordpress/guia.pdf
+- WordPress Security Guide (HTML): /recursos/seguridad-wordpress/guia.html
+- WP Headless Mode plugin (docs): /recursos/wp-headless/index.html
+- WP Headless Mode plugin (ZIP): /recursos/wp-headless/wp-headless-mode.zip
+- Plugin ZIP (BSale integration): /downloads/bsale-wordpress-plugin.zip
+- Theme ZIP (MercadoLibre real estate): /downloads/ml-real-estate-theme.zip
+
+Contact:
+- Email: juan.javier.rivera.cardenas@gmail.com
+- Site sections, in on-page order: /#hero /#about /#timeline /#techcloud /#testimonials /#experience /#stack /#ecommerce /#ai /#recursos /#principles /#personal /#contact
+
+Machine-readable notes:
+- Current site has light and dark themes
+- Main human-facing page: /index.html
+- This file is intended as a concise LLM-oriented summary of the site and profile

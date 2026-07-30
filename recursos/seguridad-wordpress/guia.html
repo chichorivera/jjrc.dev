@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa de Seguridad WordPress - Prevención, Detección y Recuperación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --accent: #ff176b;
+            --accent-dim: #ffe0eb;
+            --bg-card: #f0edec;
+            --bg-page: #ffffff;
+            --border: #e0dada;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-tertiary: #777777;
+            --ok-bg: #e6f6ee;
+            --ok-border: #5ec591;
+            --warn-bg: #fff4e4;
+            --warn-border: #ffb347;
+            --danger-bg: #ffe8ee;
+            --danger-border: #ff6f9d;
+            --info-bg: #eef3ff;
+            --info-border: #9db5ff;
+            --font-heading: 'Michroma', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.75;
+            color: var(--text-secondary);
+            background:
+                radial-gradient(circle at 6% 5%, #ffd6e5 0%, transparent 35%),
+                radial-gradient(circle at 94% 15%, #f6efed 0%, transparent 30%),
+                var(--bg-page);
+            padding: 44px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 20px 48px rgba(26, 26, 26, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e5dedd 0%, #f3eded 100%);
+            color: var(--text-primary);
+            padding: 64px 44px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.6rem, 4vw, 2.6rem);
+            letter-spacing: -1px;
+            line-height: 1.25;
+            margin-bottom: 14px;
+            color: var(--text-primary);
+        }
+
+        .header p {
+            font-size: clamp(0.95rem, 1.8vw, 1.08rem);
+            color: var(--text-secondary);
+        }
+
+        .content {
+            padding: 56px 44px;
+        }
+
+        h2 {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--text-primary);
+            font-family: var(--font-heading);
+            font-size: clamp(1.25rem, 2.7vw, 1.95rem);
+            margin: 52px 0 18px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            line-height: 1.35;
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-family: var(--font-heading);
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            margin: 34px 0 14px;
+            line-height: 1.5;
+        }
+
+        h4,
+        h5 {
+            color: var(--accent);
+            font-family: var(--font-heading);
+            font-size: 0.93rem;
+            letter-spacing: 0.4px;
+            margin: 22px 0 10px;
+            line-height: 1.65;
+        }
+
+        p {
+            margin-bottom: 16px;
+            text-wrap: pretty;
+        }
+
+        ul,
+        ol {
+            margin: 14px 0 22px 26px;
+        }
+
+        li {
+            margin-bottom: 9px;
+        }
+
+        .highlight,
+        .danger,
+        .success,
+        .info {
+            padding: 16px 18px;
+            margin: 22px 0;
+            border-left: 4px solid;
+            border-radius: 8px;
+        }
+
+        .highlight {
+            background: var(--warn-bg);
+            border-color: var(--warn-border);
+            color: #5b411f;
+        }
+
+        .danger {
+            background: var(--danger-bg);
+            border-color: var(--danger-border);
+            color: #6a233f;
+        }
+
+        .success {
+            background: var(--ok-bg);
+            border-color: var(--ok-border);
+            color: #1d5f41;
+        }
+
+        .info {
+            background: var(--info-bg);
+            border-color: var(--info-border);
+            color: #1f3f70;
+        }
+
+        .code-block {
+            background: #171717;
+            color: #d7d7d7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 22px 0;
+            overflow-x: auto;
+            border: 1px solid #2c2c2c;
+        }
+
+        .code-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2f2f2f;
+        }
+
+        .code-label {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: #ff8ab7;
+        }
+
+        .copy-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-size: 0.62rem;
+            letter-spacing: 1px;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .copy-btn:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
+        .copy-btn.copied {
+            background: #2f9f68;
+        }
+
+        pre,
+        code {
+            margin: 0;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.58;
+        }
+
+        .inline-code {
+            background: var(--accent-dim);
+            padding: 3px 7px;
+            border-radius: 4px;
+            color: #9d1149;
+            font-size: 0.88em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--accent);
+            color: #fff;
+            padding: 13px 14px;
+            text-align: left;
+            font-family: var(--font-heading);
+            font-size: 0.66rem;
+            letter-spacing: 0.8px;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: #faf7f8;
+        }
+
+        .toc {
+            background: #fbf9f8;
+            padding: 26px;
+            border-radius: 8px;
+            margin: 10px 0 36px;
+            border: 1px solid var(--border);
+        }
+
+        .toc h3 {
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .toc-item {
+            margin: 10px 0;
+            padding-left: 8px;
+        }
+
+        .toc-item a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: color 0.25s ease, border-color 0.25s ease;
+        }
+
+        .toc-item a:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .section-number {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            background: var(--accent);
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            font-family: var(--font-heading);
+            font-size: 0.74rem;
+                font-weight: 700;
+                line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .footer {
+            background: #f6f2f1;
+            padding: 28px 44px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        .guide-cover-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            background: linear-gradient(135deg, #f9f5f4 0%, #f2eceb 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .book-cover {
+            width: 100%;
+            background: #1a1a1a;
+            border-radius: 0;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 100px 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #ff176b15 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .book-cover__inner {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .book-cover__badge {
+            display: inline-flex;
+            align-self: flex-start;
+            background: var(--accent);
+            color: #fff;
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .book-cover__stripe {
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .book-cover__title {
+            font-family: var(--font-heading);
+            font-size: 86px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .book-cover__subtitle {
+            font-family: var(--font-body);
+            font-size: 24px;
+            color: #999;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .book-cover__footer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .book-cover__line {
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 23, 107, 0.2);
+        }
+
+        .book-cover__author {
+            font-family: var(--font-heading);
+            font-size: 22px;
+            font-weight: 400;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        a {
+            color: var(--accent);
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border: 0;
+            }
+
+            .copy-btn {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 18px 10px;
+            }
+
+            .guide-cover-wrap {
+                padding: 0;
+            }
+
+            .book-cover {
+                width: 100%;
+                height: auto;
+                min-height: 420px;
+                padding: 34px 22px 28px;
+            }
+
+            .header {
+                padding: 42px 20px;
+            }
+
+            .content {
+                padding: 34px 18px;
+            }
+
+            h2 {
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .toc {
+                padding: 18px;
+            }
+        }
+
+        .keyword { color: #ff8ab7; }
+        .string { color: #92d7b3; }
+        .function { color: #8fbeff; }
+        .comment { color: #7f7f7f; }
+        .operator { color: #d7d7d7; }
+        .attribute { color: #f6a3b0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="guide-cover-wrap">
+            <div class="book-cover">
+                <div class="book-cover__inner">
+                    <div class="book-cover__badge">GUIA GRATUITA</div>
+                    <div class="book-cover__stripe"></div>
+                    <h3 class="book-cover__title">Guia de<br>Seguridad<br>WordPress</h3>
+                    <br><br><br><br><br><br>
+                    <p class="book-cover__subtitle">Prevencion y Recuperacion ante Ataques e Infecciones</p>
+                </div>
+                <div class="book-cover__footer">
+                    <div class="book-cover__line"></div>
+                    <span class="book-cover__author">Javier Rivera</span>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="content">
+
+            <!-- TABLA DE CONTENIDOS -->
+            <div class="toc">
+                <h3>Tabla de Contenidos</h3>
+                <div class="toc-item"><a href="#sec1">1. Introducción: Entendiendo las Amenazas</a></div>
+                <div class="toc-item"><a href="#sec2">2. Prevención: Antes de que algo suceda</a></div>
+                <div class="toc-item"><a href="#sec3">3. Bajo Ataque: Guía paso a paso para recuperación</a></div>
+                <div class="toc-item"><a href="#sec4">4. Monitoreo Continuo y Mejora</a></div>
+                <div class="toc-item"><a href="#sec5">5. Herramientas de Referencia</a></div>
+                <div class="toc-item"><a href="#sec6">6. Conclusión</a></div>
+            </div>
+
+            <!-- SECCIÓN 1 -->
+            <h2 id="sec1"><span class="section-number">1</span>Introducción: Entendiendo las Amenazas</h2>
+
+            <p><strong>Vamos a aclarar algo desde el principio: cuando tu sitio web recibe un ataque, <u>no es personal</u>. Punto.</strong></p>
+
+            <p>Los hackers no se despiertan diciendo "voy a atacar el WordPress de chichorivera". No funciona así. Lo que sucede es que existen mecanismos completamente automatizados que permanentemente están rastreando internet buscando sitios web con vulnerabilidades específicas. Son como máquinas de escaneo que no duermen: buscan versiones desactualizadas de WordPress, plugins vulnerables, configuraciones débiles, directorios expuestos, etc.</p>
+
+            <h3>¿Cómo funcionan los ataques?</h3>
+
+            <h4>Malwares, Phishing y Spam</h4>
+
+            <ul>
+                <li><strong>Malwares:</strong> Son programas maliciosos que infectan tu servidor. Una vez adentro, pueden robar datos, modificar contenido, instalar puertas traseras, minar criptomonedas con tus recursos, o simplemente destruir tu sitio.</li>
+                <li><strong>Phishing:</strong> Aunque menos común en WordPress, puede dirigirse a los usuarios de tu sitio para robar credenciales. Se presenta como algo legítimo.</li>
+                <li><strong>Spam:</strong> Inyección de contenido malicioso, comentarios spam en masa, o distribución de malware a través de tu sitio.</li>
+            </ul>
+
+            <h4>La realidad de los directorios de vulnerabilidades</h4>
+
+            <p>Existen bases de datos públicas como:</p>
+
+            <ul>
+                <li><strong>CVE</strong> (Common Vulnerabilities and Exposures)</li>
+                <li><strong>WPScan Vulnerability Database</strong> (específicamente para WordPress)</li>
+                <li><strong>Exploit-DB</strong></li>
+            </ul>
+
+            <p>En estas bases de datos están documentadas TODAS las vulnerabilidades conocidas. Cuando sale una nueva versión de WordPress o un plugin, los atacantes automáticos la analizan al instante buscando bugs. Si tu sitio está usando una versión vulnerable, serás detectado y atacado.</p>
+
+            <div class="danger">
+                <strong>No es paranoia: es estadística pura.</strong>
+            </div>
+
+            <h4>¿Cómo exponen los sitios?</h4>
+
+            <p>Simplemente por:</p>
+
+            <ul>
+                <li><strong>No actualizar</strong> WordPress, plugins o temas</li>
+                <li>Dejar <strong>archivos de configuración expuestos</strong> (wp-config.php accesible, readme.html visible)</li>
+                <li>Usar <strong>plugins desactualizados</strong> o abandonados</li>
+                <li>Tener <strong>usuarios administrador</strong> con nombres predecibles como "admin" o "administrator"</li>
+                <li>Contraseñas débiles en <strong>roles críticos</strong></li>
+                <li>Ejecutar <strong>PHP desde carpetas de subidas</strong></li>
+                <li><strong>XML-RPC habilitado</strong> sin protección</li>
+            </ul>
+
+            <h4>El mito de que "a mí no me atacarán"</h4>
+
+            <p>Esto es falso. Si tu sitio está indexado por Google, ya forma parte del alcance de los bots atacantes. Estadísticamente, un WordPress desprotegido recibirá intentos de ataque en cuestión de horas, no días.</p>
+
+            <h4>La solución: Hardening y actualizaciones constantes</h4>
+
+            <p>No puedes evitar que te busquen, pero sí puedes hacer que no encuentren nada interesante. El "hardening" es exactamente eso: endurecerte contra estos ataques automatizados.</p>
+
+            <!-- SECCIÓN 2 -->
+            <h2 id="sec2"><span class="section-number">2</span>Prevención: Antes de que algo suceda</h2>
+
+            <h3>2.1 Mantener todo actualizado (La tarea más importante)</h3>
+
+            <p>Esto no es opcional. Es como cerrar la puerta de tu casa: es lo mínimo que debes hacer.</p>
+
+            <h4>WordPress Core:</h4>
+
+            <ul>
+                <li>Habilita las actualizaciones automáticas si es posible (generalmente ya están activadas)</li>
+                <li>Si no, revisa semanalmente si hay nuevas versiones</li>
+                <li>Las actualizaciones de seguridad críticas no deberían esperar</li>
+            </ul>
+
+            <h4>Plugins y Temas:</h4>
+
+            <ul>
+                <li>Elimina TODOS los plugins que no uses, incluso si están desactivados</li>
+                <li>Una línea de código que no se ejecuta sigue siendo una vulnerabilidad potencial</li>
+                <li>Actualiza regularmente. Los abandonware (plugins sin mantenimiento) son especialmente peligrosos</li>
+            </ul>
+
+            <h4>Herramientas para monitoreo:</h4>
+
+            <ul>
+                <li><strong>WPScan:</strong> Escanea tu sitio regularmente detectando versiones vulnerables</li>
+                <li><strong>Wordfence:</strong> Monitoreo en tiempo real de vulnerabilidades</li>
+                <li><strong>Sucuri:</strong> Monitoreo y escaneo de malware</li>
+            </ul>
+
+            <h3>2.2 Respaldos: Tu red de seguridad</h3>
+
+            <div class="highlight">
+                <strong>Aquí viene un detalle importante que muchos hosting no explican bien:</strong>
+                <p>Cuando tu hosting dice "Tenemos respaldos diarios, semanales y mensuales", <u>no significa que tengas un histórico</u>. Significa que:</p>
+                <ul>
+                    <li>El respaldo DIARIO de hoy pisa el de ayer</li>
+                    <li>El respaldo SEMANAL de esta semana pisa el de la anterior</li>
+                    <li>El respaldo MENSUAL de este mes pisa el del mes anterior</li>
+                </ul>
+                <p><strong>En la realidad:</strong> Tienes exactamente 1 respaldo de cada tipo, no un histórico completo.</p>
+            </div>
+
+            <h4>Políticas de respaldo recomendadas:</h4>
+
+            <ol>
+                <li><strong>Respaldos incrementales diarios:</strong> Desde tu hosting o con una herramienta</li>
+                <li><strong>Respaldos completos semanales:</strong> Archivo + base de datos</li>
+                <li><strong>Respaldos "congelados" mensuales:</strong> Copias que NO sobrescriben automáticamente</li>
+                <li><strong>Almacenamiento externo:</strong> Guarda copias en Google Drive, Dropbox, un servidor externo, etc.</li>
+            </ol>
+
+            <div class="danger">
+                <strong>Nunca confíes en UN solo respaldo. Nunca.</strong>
+            </div>
+
+            <h4>Herramientas de respaldo:</h4>
+
+            <ul>
+                <li><strong>UpdraftPlus:</strong> Fácil, integrado en WordPress, con almacenamiento en la nube</li>
+                <li><strong>BackWPup:</strong> Gratuito y potente</li>
+                <li><strong>Duplicator:</strong> Útil tanto para respaldos como para migraciones</li>
+                <li><strong>Respaldos manuales via cPanel/Plesk:</strong> Descarga periódica de archivos + SQL</li>
+            </ul>
+
+            <h3>2.3 Hardening de configuración</h3>
+
+            <h4>2.3.1 Ocultar información sobre WordPress</h4>
+
+            <p>Edita <span class="inline-code">wp-config.php</span> y agrega:</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">PHP - wp-config.php</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="comment">// Desactiva edición de plugins y temas desde el dashboard</span>
+<span class="keyword">define</span>(<span class="string">'DISALLOW_FILE_EDIT'</span>, <span class="keyword">true</span>);
+
+<span class="comment">// Oculta la versión de WordPress</span>
+<span class="keyword">define</span>(<span class="string">'WP_CONTENT_URL'</span>, <span class="string">'https://tudominio.com/content'</span>);
+<span class="keyword">define</span>(<span class="string">'WP_CONTENT_DIR'</span>, <span class="keyword">dirname</span>(<span class="keyword">__FILE__</span>) . <span class="string">'/content'</span>);
+
+<span class="comment">// Mejora de seguridad en header</span>
+<span class="keyword">define</span>(<span class="string">'DISABLE_FILE_EDIT'</span>, <span class="keyword">true</span>);</code></pre>
+            </div>
+
+            <p><strong>Elimina <span class="inline-code">readme.html</span>:</strong> Este archivo expone la versión exacta de WordPress.</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code>rm readme.html
+rm license.txt</code></pre>
+            </div>
+
+            <h4>2.3.2 Desactivar XML-RPC</h4>
+
+            <p>XML-RPC permite que aplicaciones externas se conecten a tu WordPress. También es vector de ataque para inyecciones.</p>
+
+            <p><strong>Opción 1:</strong> Agregando a <span class="inline-code">.htaccess</span>:</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Apache - .htaccess</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="keyword">&lt;Files</span> xmlrpc.php<span class="keyword">&gt;</span>
+    Order Allow,Deny
+    Deny from all
+<span class="keyword">&lt;/Files&gt;</span></code></pre>
+            </div>
+
+            <p><strong>Opción 2:</strong> Instala <strong>Disable XML-RPC</strong></p>
+
+            <h4>2.3.3 Cambiar URL de administración</h4>
+
+            <p>El admin está en <span class="inline-code">/wp-login.php</span> por defecto. Los atacantes lo saben.</p>
+
+            <p><strong>Herramientas:</strong></p>
+
+            <ul>
+                <li><strong>WPS Hide Login:</strong> Gratuito, fácil. Simplemente define una nueva URL para acceder al admin.</li>
+                <li><strong>iThemes Security:</strong> De pago, pero ofrece mucho más.</li>
+            </ul>
+
+            <h4>2.3.4 Limitar intentos de login</h4>
+
+            <p>Los ataques de fuerza bruta prueban miles de contraseñas por segundo.</p>
+
+            <p><strong>Herramientas:</strong></p>
+
+            <ul>
+                <li><strong>Limit Login Attempts Reloaded:</strong> Gratuito, funciona perfecto. Bloquea después de X intentos fallidos.</li>
+                <li><strong>Wordfence:</strong> Versión premium con protección avanzada.</li>
+            </ul>
+
+            <h4>2.3.5 Two-Factor Authentication (2FA)</h4>
+
+            <p>Una contraseña fuerte es necesaria pero no suficiente.</p>
+
+            <p><strong>Herramientas:</strong></p>
+
+            <ul>
+                <li><strong>WP 2FA:</strong> Gratuito, usa autenticador de teléfono o email</li>
+                <li><strong>Two Factor Authentication:</strong> Plugin simple pero efectivo</li>
+                <li><strong>Wordfence:</strong> También lo incluye en su versión premium</li>
+            </ul>
+
+            <h4>2.3.6 Bloquear ejecución de PHP en directorios específicos</h4>
+
+            <p>Los atacantes suben archivos .php a <span class="inline-code">/wp-content/uploads/</span> para ejecutarlos.</p>
+
+            <p>En <span class="inline-code">.htaccess</span> en la carpeta <span class="inline-code">/uploads/</span>:</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Apache - .htaccess</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="keyword">&lt;FilesMatch</span> <span class="string">"\\.php$"</span><span class="keyword">&gt;</span>
+    Deny from all
+<span class="keyword">&lt;/FilesMatch&gt;</span></code></pre>
+            </div>
+
+            <p>O más específico:</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Apache - .htaccess</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="keyword">&lt;Files</span> ~ <span class="string">"\\.php$"</span><span class="keyword">&gt;</span>
+    deny from all
+<span class="keyword">&lt;/Files&gt;</span></code></pre>
+            </div>
+
+            <h4>2.3.7 Proteger wp-config.php</h4>
+
+            <p>En <span class="inline-code">.htaccess</span> (raíz de WordPress):</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Apache - .htaccess</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="keyword">&lt;Files</span> wp-config.php<span class="keyword">&gt;</span>
+    Order allow,deny
+    Deny from all
+<span class="keyword">&lt;/Files&gt;</span></code></pre>
+            </div>
+
+            <h4>2.3.8 Nombres de usuario seguros</h4>
+
+            <p>Nunca uses "admin", "administrator", o "adminuser".</p>
+
+            <p>Durante la instalación, crea un usuario con nombre único. Si heredaste un sitio con usuario "admin", crea uno nuevo con permisos admin y <strong>elimina el usuario admin</strong>.</p>
+
+            <h4>2.3.9 Contraseñas fuertes</h4>
+
+            <p>Mínimo 16 caracteres, mezcla de mayúsculas, minúsculas, números y caracteres especiales.</p>
+
+            <p><strong>Herramientas:</strong></p>
+
+            <ul>
+                <li><strong>LastPass Generator</strong></li>
+                <li><strong>1Password</strong></li>
+                <li>Simplemente: Usa una frase larga y única</li>
+            </ul>
+
+            <h4>2.3.10 Headers de seguridad HTTP</h4>
+
+            <p>Agrega a tu <span class="inline-code">.htaccess</span>:</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Apache - .htaccess</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="comment"># Prevenir clickjacking</span>
+Header always append X-Frame-Options <span class="string">"SAMEORIGIN"</span>
+
+<span class="comment"># Prevenir MIME type sniffing</span>
+Header always append X-Content-Type-Options <span class="string">"nosniff"</span>
+
+<span class="comment"># Habilitar XSS protection</span>
+Header always append X-XSS-Protection <span class="string">"1; mode=block"</span>
+
+<span class="comment"># HTTPS redirect</span>
+Header always set Strict-Transport-Security <span class="string">"max-age=31536000; includeSubDomains"</span></code></pre>
+            </div>
+
+            <p>O puedes usar plugins como <strong>WP Super Cache</strong> o <strong>Sucuri</strong> que lo hacen automáticamente.</p>
+
+            <h3>2.4 Suite de seguridad recomendada (Mi preferencia personal)</h3>
+
+            <p>He trabajado con herramientas de pago y gratuitas. Las de pago ofrecen un panel unificado, pero estas gratuitas son igual de efectivas si las combinas:</p>
+
+            <ol>
+                <li><strong>Sucuri Security</strong> - Hardering, escaneo de malware, monitoreo, notificaciones</li>
+                <li><strong>Limit Login Attempts Reloaded</strong> - Protección contra fuerza bruta</li>
+                <li><strong>WP 2FA</strong> - Autenticación de dos factores</li>
+                <li><strong>Disable XML-RPC-API</strong> - Desactiva XML-RPC</li>
+                <li><strong>WPS Hide Login</strong> - Cambia URL del admin</li>
+                <li><strong>UpdraftPlus</strong> - Respaldos automáticos</li>
+            </ol>
+
+            <p><strong>Si prefieres una solución unificada de pago:</strong></p>
+
+            <ul>
+                <li><strong>Wordfence Premium:</strong> Todo en uno (firewall, 2FA, backups, escaneo)</li>
+                <li><strong>iThemes Security Pro:</strong> Muy bueno en hardening</li>
+                <li><strong>Sucuri</strong> (también tiene plan de pago): Lo mejor en detección y limpieza de malware</li>
+            </ul>
+
+            <!-- SECCIÓN 3 -->
+            <h2 id="sec3"><span class="section-number">3</span>Bajo Ataque: Guía paso a paso para recuperación</h2>
+
+            <p><strong>Tu sitio fue comprometido. No es el fin del mundo, pero necesitas actuar rápido y metódicamente.</strong></p>
+
+            <h3>Paso A: Respaldo completo del directorio raíz</h3>
+
+            <p>Antes de hacer cualquier cosa, descarga TODA la estructura de tu sitio. Incluso aunque esté infectado, necesitarás analizarlo después.</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="comment"># Vía SFTP</span>
+<span class="comment"># Descarga todo: /public_html o /www (según tu hosting)</span>
+
+<span class="comment"># O vía SSH si tienes acceso</span>
+tar -czf backup-infected-<span class="operator">$(</span>date +%Y%m%d<span class="operator">)</span>.tar.gz /home/user/public_html/</code></pre>
+            </div>
+
+            <div class="info">
+                <strong>Por qué:</strong> Aunque parezca contraproducente descargar malware, necesitarás analizarlo para entender qué pasó. Además, si la limpieza va mal, tendrás de dónde volver.
+            </div>
+
+            <h3>Paso B: Inspección visual y análisis de archivos sospechosos</h3>
+
+            <h4>¿Qué buscar?</h4>
+
+            <ul>
+                <li>Archivos con nombres raros (shell.php, up.php, wp-load123.php)</li>
+                <li>Archivos PHP en directorios que no deberían tenerlos</li>
+                <li>Archivos con fechas de creación reciente (comparar con tu última subida legítima)</li>
+            </ul>
+
+            <h4>Dentro del directorio raíz:</h4>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Estructura</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code>wp-admin/
+wp-includes/
+wp-content/
+.htaccess  &lt;-- BUSCA AQUÍ
+index.php
+wp-config.php
+[Archivos extraños aquí?]</code></pre>
+            </div>
+
+            <h4>Lo que verás en código malicioso:</h4>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">PHP - Código Malicioso (Ejemplos)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="keyword">&lt;?php</span>
+<span class="comment">// Código ofuscado, comprimido:</span>
+<span class="function">eval</span>(<span class="function">base64_decode</span>(<span class="string">"SGVsbG8gV29ybGQ="</span>));
+
+<span class="comment">// O así:</span>
+$code = <span class="function">gzinflate</span>(<span class="function">base64_decode</span>(<span class="string">"...largo string..."</span>));
+<span class="function">eval</span>($code);
+
+<span class="comment">// O con expresiones regulares maliciosas:</span>
+<span class="function">preg_replace</span>(<span class="string">"/.*\/e"</span>, <span class="string">"system($_GET['cmd'])"</span>, <span class="string">""</span>);
+
+<span class="comment">// O simple ejecución de comandos:</span>
+<span class="function">system</span>($_GET[<span class="string">'cmd'</span>]);
+<span class="function">shell_exec</span>($_POST[<span class="string">'shell'</span>]);
+<span class="function">assert</span>($_GET[<span class="string">'code'</span>]);</code></pre>
+            </div>
+
+            <h4>Herramientas de análisis:</h4>
+
+            <ul>
+                <li><strong>VirusTotal:</strong> Sube archivos sospechosos para análisis</li>
+                <li><strong>PHP Sandbox:</strong> Analiza código PHP de forma segura</li>
+                <li><strong>Grep:</strong> Busca patrones maliciosos</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code>grep -r <span class="string">"eval\|base64_decode\|system\|shell_exec\|assert"</span> /ruta/
+grep -r <span class="string">"preg_replace.*\/e"</span> /ruta/</code></pre>
+            </div>
+
+            <h3>Paso C: Limpieza del core de WordPress</h3>
+
+            <p>Aquí es donde eliminas lo que sabes que debe estar limpio.</p>
+
+            <h4>Elimina:</h4>
+
+            <ol>
+                <li><span class="inline-code">/wp-admin/</span> - Carpeta completa</li>
+                <li><span class="inline-code">/wp-includes/</span> - Carpeta completa</li>
+                <li>Todos los archivos raíz EXCEPTO <span class="inline-code">wp-config.php</span> y <span class="inline-code">.htaccess</span> (aunque lo revisaremos)</li>
+                <li><span class="inline-code">readme.html</span>, <span class="inline-code">license.txt</span>, <span class="inline-code">wp-json</span> (si no lo usas)</li>
+            </ol>
+
+            <h4>Revisa especialmente wp-config.php:</h4>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">PHP - wp-config.php</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="comment">// LEGÍTIMO: Solo ves variables de configuración</span>
+<span class="keyword">define</span>(<span class="string">'DB_NAME'</span>, <span class="string">'nombrebd'</span>);
+<span class="keyword">define</span>(<span class="string">'DB_USER'</span>, <span class="string">'usuario'</span>);
+<span class="comment">// ... claves de seguridad</span>
+
+<span class="comment">// MALICIOSO: Verás eval, base64_decode, referencias a archivos</span>
+<span class="function">eval</span>(<span class="function">base64_decode</span>(...));
+<span class="keyword">include</span>($_GET[<span class="string">'file'</span>]);
+<span class="keyword">require</span>(__DIR__ . <span class="string">'/malware.php'</span>);</code></pre>
+            </div>
+
+            <div class="danger">
+                <strong>Si <span class="inline-code">wp-config.php</span> tiene código extraño:</strong>
+                <ul>
+                    <li>Elimínalo. Edita el archivo y deja solo las configuraciones reales de base de datos.</li>
+                    <li>Las keys y salts (<span class="inline-code">AUTH_KEY</span>, <span class="inline-code">SECURE_AUTH_KEY</span>, etc.) puedes regenerarlas en <a href="https://api.wordpress.org/secret-key/1.1/salt/" target="_blank">https://api.wordpress.org/secret-key/1.1/salt/</a></li>
+                </ul>
+            </div>
+
+            <h4>Elimina también .htaccess:</h4>
+
+            <p>Lo reconstruiremos después. Podría tener reglas maliciosas.</p>
+
+            <h4>Vía FTP/SFTP:</h4>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Instrucciones</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code>Conecta con tu cliente FTP favorito (FileZilla, WinSCP)
+Navega a /wp-admin/ y /wp-includes/
+Elimina ambas carpetas
+Elimina: index.php, wp-load.php, wp-settings.php, etc. (los PHP de raíz)
+Mantén: wp-config.php, .htaccess (para revisión)</code></pre>
+            </div>
+
+            <h4>Vía cPanel File Manager:</h4>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Instrucciones</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code>cPanel > File Manager
+Navega a /public_html
+Selecciona wp-admin, clic derecho, Delete
+Repite con wp-includes
+Elimina archivos PHP de raíz</code></pre>
+            </div>
+
+            <h3>Paso D: Descarga e instalación de WordPress limpio</h3>
+
+            <ol>
+                <li>Descarga la última versión desde <a href="https://wordpress.org/download/" target="_blank">https://wordpress.org/download/</a></li>
+                <li>Descomprime en tu computadora</li>
+                <li><strong>IMPORTANTE:</strong> Antes de subir, elimina la carpeta <span class="inline-code">wp-content</span> del ZIP descomprimido. Tú vas a conservar tu <span class="inline-code">wp-content</span> (plugins, themes, uploads) ya que probablemente están limpios y contienen tu contenido real.</li>
+                <li>Comprime de nuevo (sin wp-content)</li>
+                <li>Sube via FTP/SFTP a tu servidor</li>
+                <li>Descomprime en el servidor (sobrescribe los archivos eliminados)</li>
+            </ol>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="comment"># En servidor via SSH:</span>
+cd /home/user/public_html
+unzip wordpress-clean.zip
+<span class="comment"># Esto recrea wp-admin/, wp-includes/, index.php, etc.</span></code></pre>
+            </div>
+
+            <h3>Paso E: Recreación de estructura y validación</h3>
+
+            <p>Después de descomprimir:</p>
+
+            <ol>
+                <li><strong>Verifica que wp-content esté intacto</strong> (debe contener tus plugins y temas)</li>
+                <li><strong>Verifica wp-config.php</strong> (debe estar ahí y sin cambios)</li>
+                <li><strong>Revisa .htaccess</strong> (si tiene código malicioso, reemplázalo con uno limpio o elimínalo)</li>
+            </ol>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Apache - .htaccess limpio</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="comment"># BEGIN WordPress</span>
+<span class="keyword">&lt;IfModule</span> mod_rewrite.c<span class="keyword">&gt;</span>
+RewriteEngine On
+RewriteBase /
+RewriteRule <span class="string">^index\.html$</span> - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+<span class="keyword">&lt;/IfModule&gt;</span>
+<span class="comment"># END WordPress</span></code></pre>
+            </div>
+
+            <div class="success">
+                <strong>Prueba que todo funciona:</strong>
+                <ul>
+                    <li>Visita tu sitio web: ¿Carga?</li>
+                    <li>Intenta acceder a <span class="inline-code">/wp-admin/</span></li>
+                    <li>¿Puedes loguear?</li>
+                </ul>
+            </div>
+
+            <h3>Paso F: Limpieza de plugins, temas y actualizaciones</h3>
+
+            <p>Ya tienes el core limpio. Ahora limpiamos lo que viene con él.</p>
+
+            <h4>1. Accede a wp-admin</h4>
+
+            <h4>2. Limpieza de plugins:</h4>
+
+            <ul>
+                <li>Ve a Plugins > Plugins instalados</li>
+                <li><strong>Desactiva y elimina TODOS</strong> excepto los que realmente uses</li>
+                <li>Lánzate: si en 3 meses no has usado un plugin, no lo necesitas</li>
+                <li>No tener plugins es mejor que tener plugins sin mantenimiento</li>
+            </ul>
+
+            <h4>3. Limpieza de temas:</h4>
+
+            <ul>
+                <li>Ve a Apariencia > Temas</li>
+                <li><strong>Mantén solo:</strong>
+                    <ul>
+                        <li>El tema activo</li>
+                        <li>Su tema padre (si lo tiene)</li>
+                    </ul>
+                </li>
+                <li><strong>Elimina todos los demás</strong> (Twenty Twenty-Two, Twenty Twenty-Three, etc.)</li>
+            </ul>
+
+            <h4>4. Actualización manual de plugins:</h4>
+
+            <div class="highlight">
+                <strong>Hack importante:</strong> No confíes completamente en las actualizaciones automáticas en un sitio comprometido.
+            </div>
+
+            <ul>
+                <li>Ve a cada plugin</li>
+                <li>Si no muestra "actualización disponible", <strong>descárgalo limpio</strong> desde:
+                    <ul>
+                        <li><a href="https://wordpress.org/plugins/" target="_blank">https://wordpress.org/plugins/nombre-plugin/</a></li>
+                        <li>O desde el repositorio oficial</li>
+                    </ul>
+                </li>
+                <li>Elimina la carpeta del plugin vía FTP</li>
+                <li>Sube la versión recién descargada</li>
+            </ul>
+
+            <p><strong>Ejemplo con WP 2FA:</strong></p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="comment"># Elimina la versión posiblemente infectada</span>
+rm -rf /wp-content/plugins/wp-2fa/
+
+<span class="comment"># Descarga y extrae el ZIP limpio, sube vía FTP</span>
+<span class="comment"># O vía dashboard después de descargar el ZIP</span></code></pre>
+            </div>
+
+            <h4>5. Actualización de temas:</h4>
+
+            <ul>
+                <li>Repite el mismo proceso con temas custom</li>
+                <li>WordPress.com, GeneratePress, OceanWP, etc., tienen versiones limpias en sus repositorios</li>
+            </ul>
+
+            <h3>Paso G: Auditoría de contenido</h3>
+
+            <p>Ahora que el core está limpio, revisa si el malware inyectó contenido.</p>
+
+            <h4>Páginas y Entradas:</h4>
+
+            <ul>
+                <li>Ve a Entradas > Todas las entradas</li>
+                <li>Ve a Páginas > Todas las páginas</li>
+                <li>Busca títulos o contenido que <strong>no hayas creado</strong></li>
+                <li>Busca redirecciones: <span class="inline-code">&lt;meta http-equiv="refresh" ...&gt;</span></li>
+                <li>Busca contenido oculto (CSS color:white, font-size:0px)</li>
+            </ul>
+
+            <h4>Comentarios:</h4>
+
+            <ul>
+                <li>Ve a Comentarios</li>
+                <li>Busca comentarios spam o maliciosos</li>
+                <li>Elimina en lotes si hay muchos</li>
+            </ul>
+
+            <h4>Usuarios:</h4>
+
+            <ul>
+                <li>Ve a Usuarios > Todos los usuarios</li>
+                <li><strong>Busca usuarios sospechosos:</strong>
+                    <ul>
+                        <li>"admin", "administrator" (deberían haber sido creados por ti)</li>
+                        <li>Nombres random como "xyzuser123", "hacker", "test"</li>
+                        <li>Usuarios con rol Administrator que no conoces</li>
+                    </ul>
+                </li>
+                <li><strong>Elimina todos menos los administradores legítimos</strong></li>
+                <li>Si editas un usuario para cambiar su rol a "Suscriptor" sin antes revisar, elimínalo</li>
+            </ul>
+
+            <h4>Medios:</h4>
+
+            <ul>
+                <li>Ve a Biblioteca de medios</li>
+                <li>Busca archivos raros (.php subido como .jpg, archivos con nombres extraños)</li>
+                <li>Revisa fechas: ¿Cuándo subiste estos archivos?</li>
+            </ul>
+
+            <h3>Paso H: Hardening avanzado post-infección</h3>
+
+            <p>Tu sitio fue hackeado una vez. Ahora le vas a poner frenos.</p>
+
+            <h4>Suite de hardening (Mis recomendaciones):</h4>
+
+            <h5>1. Sucuri Security (Gratuito)</h5>
+
+            <ul>
+                <li>Instalación: Busca en Plugins > Añadir nuevo</li>
+                <li>Te hará un escaneo profundo</li>
+                <li>Notificaciones si detecta cambios</li>
+                <li>Protección contra malware</li>
+            </ul>
+
+            <h5>2. Limit Login Attempts Reloaded (Gratuito)</h5>
+
+            <ul>
+                <li>Bloquea después de X intentos fallidos</li>
+                <li>Configura: 5 intentos, bloqueo de 30 minutos</li>
+                <li>Ver > Historial de intentos de login</li>
+            </ul>
+
+            <h5>3. WP 2FA (Gratuito)</h5>
+
+            <ul>
+                <li>Genera código TOTP (Google Authenticator, Authy)</li>
+                <li>O autenticación por email</li>
+                <li>Requiere 2FA en dashboard</li>
+            </ul>
+
+            <h5>4. Disable XML-RPC-API (Gratuito)</h5>
+
+            <ul>
+                <li>Simplemente desactiva XML-RPC</li>
+            </ul>
+
+            <h5>5. WPS Hide Login (Gratuito)</h5>
+
+            <ul>
+                <li>Configura nueva URL, ej: <span class="inline-code">/mi-admin-secreto/</span></li>
+                <li>Los atacantes no conocerán esta URL</li>
+                <li>Guárdala en tu gestor de contraseñas</li>
+            </ul>
+
+            <h4>Instalación rápida:</h4>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Instrucciones</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code>Dashboard > Plugins > Añadir nuevo
+Busca: "Sucuri"
+Instala y activa
+Repite para los otros plugins</code></pre>
+            </div>
+
+            <h3>Paso I: Mejores prácticas de seguridad permanentes</h3>
+
+            <p>Ahora que limpiaste, hagamos que no vuelva a pasar.</p>
+
+            <h4>Archivo/Configuración</h4>
+
+            <h5>Elimina rastros en la raíz:</h5>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code>rm readme.html
+rm license.txt
+rm wp-cli.yml <span class="comment">(si existe)</span>
+rm .htaccess.bak <span class="comment">(archivos de respaldo)</span></code></pre>
+            </div>
+
+            <h4>Usuarios</h4>
+
+            <h5>Crea usuario administrador seguro:</h5>
+
+            <ul>
+                <li>Nombre de usuario: algo único (ej: "j.rivera.admin")</li>
+                <li>Email: tu correo real</li>
+                <li>Contraseña: 18+ caracteres, random</li>
+                <li>Guarda en gestor de contraseñas</li>
+            </ul>
+
+            <h5>Si heredaste usuario "admin":</h5>
+
+            <ol>
+                <li>Crea nuevo usuario con rol Administrator (nombre único)</li>
+                <li>Loguea con la nueva cuenta</li>
+                <li>Ve a Usuarios</li>
+                <li>Selecciona el usuario "admin" antiguo</li>
+                <li>Clic en "Eliminar"</li>
+                <li>Transfiere sus entradas a la nueva cuenta</li>
+            </ol>
+
+            <h4>Contraseñas</h4>
+
+            <h5>Para TODOS los roles que tengan acceso:</h5>
+
+            <ul>
+                <li>Mínimo 16 caracteres</li>
+                <li>Mayúsculas, minúsculas, números, símbolos</li>
+                <li>Únicas (no reutilices)</li>
+                <li>Guarda en 1Password o LastPass</li>
+            </ul>
+
+            <p><strong>Generador:</strong> <a href="https://www.random.org/passwords/" target="_blank">https://www.random.org/passwords/</a></p>
+
+            <h4>Roles y permisos</h4>
+
+            <ul>
+                <li><strong>Administrator:</strong> Solo TÚ (máximo, 1 persona más si tienes colaborador)</li>
+                <li><strong>Editor:</strong> Si tienes redactores</li>
+                <li><strong>Author:</strong> Si tienes freelancers de contenido</li>
+                <li><strong>Contributor:</strong> Raramente necesario</li>
+            </ul>
+
+            <p>Menos permisos = menor riesgo.</p>
+
+            <h4>Acceso física al servidor</h4>
+
+            <p>Si tienes acceso SSH:</p>
+
+            <ul>
+                <li>Usa clave SSH (no contraseña)</li>
+                <li>Desactiva login de root</li>
+                <li>Cambia puerto SSH predeterminado (22)</li>
+            </ul>
+
+            <p><strong>Ejemplo en servidor:</strong></p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">SSH - ~/.ssh/config</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code>Host miservidor
+    HostName ejemplo.com
+    User tuuser
+    IdentityFile ~/.ssh/id_rsa
+    Port 2222  <span class="comment"># Puerto customizado</span></code></pre>
+            </div>
+
+            <h4>Monitoreo continuo</h4>
+
+            <p><strong>Con Sucuri:</strong></p>
+
+            <ul>
+                <li>Revisa Sucuri Security > Alertas semanalmente</li>
+                <li>Si ve cambios raros, investiga</li>
+            </ul>
+
+            <p><strong>Con Limit Login Attempts:</strong></p>
+
+            <ul>
+                <li>Ve a Resultados de intentos</li>
+                <li>¿Ves intentos raros? Investiga</li>
+            </ul>
+
+            <h3>Paso J: Respaldo post-hardening</h3>
+
+            <p>Ahora que todo está limpio y endurecido, <strong>crea un respaldo de referencia</strong>.</p>
+
+            <p>Este será tu "baseline" seguro.</p>
+
+            <h4>Usa UpdraftPlus:</h4>
+
+            <ol>
+                <li>Plugins > UpdraftPlus > Configuración</li>
+                <li>Calendario > Crea respaldo manual</li>
+                <li>Descarga archivo ZIP (Descargar copia)</li>
+                <li>Guarda en múltiples lugares:
+                    <ul>
+                        <li>Tu computadora</li>
+                        <li>Google Drive</li>
+                        <li>Servidor FTP externo</li>
+                        <li>Dropbox</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h4>O manualmente:</h4>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="comment"># Base de datos</span>
+mysqldump -u usuario -p nombrebd > sitio-limpio.sql
+
+<span class="comment"># Archivos</span>
+tar -czf sitio-limpio-files.tar.gz /home/user/public_html/</code></pre>
+            </div>
+
+            <div class="success">
+                <strong>Por qué:</strong> Si en las próximas 48-72 horas vuelve a ser hackeado, sabrás que:
+                <ol>
+                    <li>Hay una vulnerabilidad específica en tus plugins</li>
+                    <li>Alguien tiene acceso FTP/SFTP</li>
+                    <li>Hay un problema de permisos</li>
+                </ol>
+                <p>No tendrás que empezar desde cero.</p>
+            </div>
+
+            <!-- SECCIÓN 4 -->
+            <h2 id="sec4"><span class="section-number">4</span>Monitoreo Continuo y Mejora</h2>
+
+            <h3>Herramientas de escaneo periódico</h3>
+
+            <h4>WPScan (Línea de comandos)</h4>
+
+            <p>Si tienes acceso SSH a tu servidor:</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code><span class="comment"># Instalación (si tienes Ruby)</span>
+gem install wpscan
+
+<span class="comment"># Escaneo básico</span>
+wpscan --url https://tudominio.com
+
+<span class="comment"># Escaneo profundo (requiere API token gratuito)</span>
+wpscan --url https://tudominio.com --api-token TU_TOKEN</code></pre>
+            </div>
+
+            <h4>¿Qué detecta?</h4>
+
+            <ul>
+                <li>Versión de WordPress desactualizada</li>
+                <li>Plugins vulnerables</li>
+                <li>Temas vulnerables</li>
+                <li>Usuarios enumerables</li>
+            </ul>
+
+            <p>Regístrate gratis en <a href="https://wpscan.com/api" target="_blank">https://wpscan.com/api</a> para token.</p>
+
+            <h4>Wordfence (Plugin)</h4>
+
+            <p>Versión gratuita muy buena:</p>
+
+            <ol>
+                <li>Instala plugin "Wordfence Security"</li>
+                <li>Dashboard > Wordfence > Opciones</li>
+                <li>Habilita: Escaneo de archivos, Firewall</li>
+            </ol>
+
+            <p>Recibe alertas de:</p>
+
+            <ul>
+                <li>Cambios de archivos WordPress</li>
+                <li>Plugins vulnerables</li>
+                <li>Intentos de login fallidos</li>
+            </ul>
+
+            <h4>Checklist mensual</h4>
+
+            <p>Cada 30 días:</p>
+
+            <div class="code-block">
+                <div class="code-block-header">
+                    <span class="code-label">Checklist</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                </div>
+                <pre><code>[ ] Actualizar WordPress
+[ ] Actualizar plugins
+[ ] Actualizar temas
+[ ] Revisar usuarios activos
+[ ] Revisar Sucuri y Wordfence
+[ ] Crear respaldo
+[ ] Probar restauración de respaldo (al menos cada 3 meses)</code></pre>
+            </div>
+
+            <!-- SECCIÓN 5 -->
+            <h2 id="sec5"><span class="section-number">5</span>Herramientas de Referencia</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Herramienta</th>
+                        <th>Tipo</th>
+                        <th>Costo</th>
+                        <th>Función</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sucuri Security</td>
+                        <td>Plugin</td>
+                        <td>Gratuito</td>
+                        <td>Escaneo de malware</td>
+                    </tr>
+                    <tr>
+                        <td>Limit Login Attempts</td>
+                        <td>Plugin</td>
+                        <td>Gratuito</td>
+                        <td>Protección fuerza bruta</td>
+                    </tr>
+                    <tr>
+                        <td>WP 2FA</td>
+                        <td>Plugin</td>
+                        <td>Gratuito</td>
+                        <td>Autenticación 2FA</td>
+                    </tr>
+                    <tr>
+                        <td>WPS Hide Login</td>
+                        <td>Plugin</td>
+                        <td>Gratuito</td>
+                        <td>Cambiar URL admin</td>
+                    </tr>
+                    <tr>
+                        <td>UpdraftPlus</td>
+                        <td>Plugin</td>
+                        <td>Gratuito+</td>
+                        <td>Respaldos</td>
+                    </tr>
+                    <tr>
+                        <td>Wordfence</td>
+                        <td>Plugin</td>
+                        <td>Gratuito+</td>
+                        <td>Firewall y escaneo</td>
+                    </tr>
+                    <tr>
+                        <td>WPScan</td>
+                        <td>CLI/Web</td>
+                        <td>Gratuito+</td>
+                        <td>Escaneo de vulnerabilidades</td>
+                    </tr>
+                    <tr>
+                        <td>iThemes Security</td>
+                        <td>Plugin</td>
+                        <td>Pago</td>
+                        <td>Suite completa</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- SECCIÓN 6 -->
+            <h2 id="sec6"><span class="section-number">6</span>Conclusión</h2>
+
+            <p>La seguridad de WordPress es un proceso continuo, no un destino.</p>
+
+            <p><strong>Recuerda:</strong></p>
+            <ul>
+                <li>Los ataques NO son personales</li>
+                <li>Pero SÍ son inevitables si no te proteges</li>
+                <li>Las herramientas son el 20%, la disciplina es el 80%</li>
+                <li>Mantener todo actualizado previene el 90% de los ataques</li>
+            </ul>
+
+            <h3>Tu plan de seguridad</h3>
+            <ol>
+                <li>Hoy: Implementa los 5 plugins básicos</li>
+                <li>Esta semana: Actualiza todo y crea respaldo</li>
+                <li>Este mes: Revisa usuarios, contraseñas y permisos</li>
+                <li>Permanentemente: Actualiza, monitorea y respalda</li>
+            </ol>
+
+            <p><strong>Porque cuando (no "si", sino "cuando") intenten atacar, estarás listo.</strong></p>
+        </div>
+
+        <div class="footer">
+            Guía de seguridad WordPress - Javier Rivera
+        </div>
+    </div>
+
+    <script>
+        async function copyCode(button) {
+            const block = button.closest('.code-block');
+            if (!block) return;
+
+            const code = block.querySelector('pre code');
+            if (!code) return;
+
+            const text = code.innerText;
+
+            try {
+                await navigator.clipboard.writeText(text);
+            } catch (e) {
+                const temp = document.createElement('textarea');
+                temp.value = text;
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand('copy');
+                document.body.removeChild(temp);
+            }
+
+            const original = button.textContent;
+            button.textContent = 'Copiado';
+            button.classList.add('copied');
+            setTimeout(() => {
+                button.textContent = original;
+                button.classList.remove('copied');
+            }, 1200);
+        }
+    </script>
+</body>
+</html>

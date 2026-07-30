@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WP Headless Mode — Tutorial de Implementación</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2>WP Headless Mode</h2>
+      <p>v1.3.1 · Tutorial de implementación</p>
+      <p style="margin-top:8px"><a href="index.html" style="color:var(--accent);font-size:11px;font-weight:700">← Documentación técnica</a></p>
+    </div>
+    <nav>
+      <div class="nav-group">
+        <div class="nav-group-title">Primeros pasos</div>
+        <a href="#prerequisitos">Prerrequisitos</a>
+        <a href="#estructura-api">Estructura de la API</a>
+        <a href="#autenticacion">Autenticación</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Next.js</div>
+        <a href="#nextjs-setup">Setup del proyecto</a>
+        <a href="#nextjs-client">API client</a>
+        <a href="#nextjs-landing">Landing page</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Astro</div>
+        <a href="#astro-setup">Setup del proyecto</a>
+        <a href="#astro-client">API client</a>
+        <a href="#astro-landing">Landing page</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Nuxt</div>
+        <a href="#nuxt-setup">Setup del proyecto</a>
+        <a href="#nuxt-client">API client</a>
+        <a href="#nuxt-landing">Landing page</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Vanilla JS</div>
+        <a href="#vanilla-setup">Setup</a>
+        <a href="#vanilla-client">API client</a>
+        <a href="#vanilla-landing">Landing page</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Recursos</div>
+        <a href="#endpoints-ref">Endpoints de referencia</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ── Content ── -->
+  <main class="content">
+
+    <div class="doc-header">
+      <h1>Tutorial de Implementación <span class="version-badge">v1.3.1</span></h1>
+      <p>Cómo construir una landing page consumiendo la REST API de WordPress con WP Headless Mode. Ejemplos completos en <strong>Next.js</strong>, <strong>Astro</strong>, <strong>Nuxt</strong> y <strong>Vanilla JS</strong>.</p>
+    </div>
+
+    <!-- ── Prerrequisitos ── -->
+    <h2 id="prerequisitos">Prerrequisitos</h2>
+
+    <div class="callout callout-info">
+      <strong>Antes de empezar</strong>
+      Asegúrate de tener WP Headless Mode instalado y configurado en tu WordPress. El modo headless debe estar activo y los orígenes CORS configurados con la URL de tu frontend.
+    </div>
+
+    <p>Lista de verificación:</p>
+    <ul>
+      <li>WordPress 6.0+ con WP Headless Mode activo</li>
+      <li>CORS configurado en <strong>Configuración → Orígenes CORS permitidos</strong> con la URL de tu frontend (ej: <code>http://localhost:3000</code> para desarrollo)</li>
+      <li>Al menos algunos posts publicados en WordPress</li>
+      <li>Node.js 18+ instalado localmente</li>
+    </ul>
+
+    <p>En todos los ejemplos usaremos <code>https://tu-wp.com</code> como la URL base de WordPress. Reemplázala con la tuya.</p>
+
+    <!-- ── Estructura de la API ── -->
+    <h2 id="estructura-api">Estructura de la API</h2>
+
+    <p>WP Headless Mode usa la <strong>REST API nativa de WordPress</strong> (<code>/wp-json/wp/v2/</code>), endurecida con los headers y seguridad del plugin. Los endpoints más comunes para una landing:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Endpoint</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET /wp/v2/posts</code></td><td>Lista de posts paginada</td><td><code>?per_page=6&_embed</code></td></tr>
+          <tr><td><code>GET /wp/v2/posts/{id}</code></td><td>Post individual</td><td><code>/wp/v2/posts/1?_embed</code></td></tr>
+          <tr><td><code>GET /wp/v2/pages</code></td><td>Lista de páginas</td><td><code>?slug=home</code></td></tr>
+          <tr><td><code>GET /wp/v2/categories</code></td><td>Categorías</td><td><code>?per_page=100</code></td></tr>
+          <tr><td><code>GET /wp/v2/media/{id}</code></td><td>Imagen/archivo</td><td>retornada en <code>_embedded</code></td></tr>
+          <tr><td><code>GET /headless/v1/health</code></td><td>Health check del plugin</td><td>útil para verificar conexión</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-tip">
+      <strong>Tip: usa <code>_embed</code></strong>
+      El parámetro <code>?_embed</code> incluye en la respuesta los datos relacionados (imagen destacada, autor, categorías) evitando múltiples requests. Muy útil para landing pages.
+    </div>
+
+    <!-- ── Autenticación ── -->
+    <h2 id="autenticacion">Autenticación</h2>
+
+    <p>Si tienes activado <strong>Requerir auth en REST API</strong>, necesitas autenticarte. La forma más simple es con <strong>Application Passwords</strong> de WordPress:</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Generar Application Password</h4>
+          <p>En WordPress ve a <strong>Usuarios → Tu perfil</strong>, desplázate hasta <strong>Application Passwords</strong>, ingresa un nombre (ej: "Frontend") y haz click en <strong>Add New Application Password</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Guardar las credenciales</h4>
+          <p>Copia el password generado (solo se muestra una vez). El formato para el header es <code>usuario:app-password</code> en Base64.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Usar en tu frontend</h4>
+          <pre><code><span class="cmt">// En tu .env.local</span>
+WP_USER=admin
+WP_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx
+
+<span class="cmt">// Header resultante</span>
+<span class="kw">const</span> token = btoa(<span class="str">`${user}:${password}`</span>);
+<span class="cmt">// Authorization: Basic &lt;token&gt;</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-warning">
+      <strong>Nunca expongas las credenciales en el cliente</strong>
+      Las llamadas autenticadas deben hacerse siempre desde el servidor (SSR/SSG), nunca desde el browser. En Next.js/Astro/Nuxt usa variables de entorno de servidor.
+    </div>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         NEXT.JS
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <h2 id="nextjs-setup">Next.js — Setup del proyecto</h2>
+
+    <p>Usaremos <strong>Next.js 14+</strong> con App Router y <code>fetch</code> nativo (no necesita axios ni swr para SSG).</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Crear el proyecto</h4>
+          <pre><code>npx create-next-app@latest mi-landing --typescript --tailwind --app
+cd mi-landing</code></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Variables de entorno</h4>
+          <p>Crea <code>.env.local</code> en la raíz:</p>
+          <pre><code>NEXT_PUBLIC_WP_URL=https://tu-wp.com
+WP_USER=admin
+WP_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="nextjs-client">Next.js — API client</h2>
+    <p>Crea <code>lib/wordpress.ts</code>:</p>
+    <pre><code><span class="kw">const</span> WP_URL = process.env.NEXT_PUBLIC_WP_URL;
+<span class="kw">const</span> AUTH   = process.env.WP_USER && process.env.WP_APP_PASSWORD
+  ? <span class="str">`Basic ${btoa(`${process.env.WP_USER}:${process.env.WP_APP_PASSWORD}`)}`</span>
+  : <span class="kw">undefined</span>;
+
+<span class="kw">async function</span> <span class="fn">wpFetch</span>&lt;T&gt;(path: <span class="cls">string</span>): <span class="cls">Promise</span>&lt;T&gt; {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">`${WP_URL}/wp-json${path}`</span>, {
+    headers: {
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+      ...(AUTH ? { <span class="str">Authorization</span>: AUTH } : {}),
+    },
+    next: { revalidate: <span class="num">60</span> }, <span class="cmt">// ISR: revalidar cada 60s</span>
+  });
+  <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="cls">Error</span>(<span class="str">`WP API error: ${res.status} ${path}`</span>);
+  <span class="kw">return</span> res.json();
+}
+
+<span class="kw">export interface</span> <span class="cls">WPPost</span> {
+  id:      number;
+  slug:    string;
+  title:   { rendered: string };
+  excerpt: { rendered: string };
+  date:    string;
+  _embedded?: {
+    <span class="str">'wp:featuredmedia'</span>?: [{ source_url: string; alt_text: string }];
+    author?: [{ name: string }];
+  };
+}
+
+<span class="kw">export const</span> getPosts = (perPage = <span class="num">6</span>) =>
+  wpFetch&lt;<span class="cls">WPPost</span>[]&gt;(<span class="str">`/wp/v2/posts?per_page=${perPage}&_embed`</span>);
+
+<span class="kw">export const</span> getPost = (slug: string) =>
+  wpFetch&lt;<span class="cls">WPPost</span>[]&gt;(<span class="str">`/wp/v2/posts?slug=${slug}&_embed`</span>)
+    .then(posts => posts[<span class="num">0</span>] ?? <span class="kw">null</span>);
+
+<span class="kw">export const</span> getPage = (slug: string) =>
+  wpFetch&lt;<span class="cls">WPPost</span>[]&gt;(<span class="str">`/wp/v2/pages?slug=${slug}&_embed`</span>)
+    .then(pages => pages[<span class="num">0</span>] ?? <span class="kw">null</span>);</code></pre>
+
+    <h2 id="nextjs-landing">Next.js — Landing page</h2>
+    <p>Edita <code>app/page.tsx</code>:</p>
+    <pre><code><span class="kw">import</span> { getPosts } <span class="kw">from</span> <span class="str">'@/lib/wordpress'</span>;
+
+<span class="kw">export default async function</span> <span class="fn">HomePage</span>() {
+  <span class="kw">const</span> posts = <span class="kw">await</span> <span class="fn">getPosts</span>(<span class="num">6</span>);
+
+  <span class="kw">return</span> (
+    &lt;main className=<span class="str">"max-w-4xl mx-auto px-6 py-16"</span>&gt;
+      &lt;h1 className=<span class="str">"text-4xl font-bold mb-4"</span>&gt;Blog&lt;/h1&gt;
+
+      &lt;div className=<span class="str">"grid gap-8 md:grid-cols-2 lg:grid-cols-3"</span>&gt;
+        {posts.map(post =&gt; {
+          <span class="kw">const</span> img = post._embedded?.[<span class="str">'wp:featuredmedia'</span>]?.[<span class="num">0</span>];
+          <span class="kw">return</span> (
+            &lt;article key={post.id} className=<span class="str">"border rounded-xl overflow-hidden"</span>&gt;
+              {img && (
+                &lt;img
+                  src={img.source_url}
+                  alt={img.alt_text}
+                  className=<span class="str">"w-full h-48 object-cover"</span>
+                /&gt;
+              )}
+              &lt;div className=<span class="str">"p-5"</span>&gt;
+                &lt;h2
+                  className=<span class="str">"text-lg font-semibold mb-2"</span>
+                  dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                /&gt;
+                &lt;p
+                  className=<span class="str">"text-sm text-gray-600"</span>
+                  dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
+                /&gt;
+                &lt;a
+                  href={<span class="str">`/blog/${post.slug}`</span>}
+                  className=<span class="str">"mt-3 inline-block text-sm font-medium text-pink-600"</span>
+                &gt;
+                  Leer más →
+                &lt;/a&gt;
+              &lt;/div&gt;
+            &lt;/article&gt;
+          );
+        })}
+      &lt;/div&gt;
+    &lt;/main&gt;
+  );
+}</code></pre>
+
+    <div class="callout callout-tip">
+      <strong>Static Generation vs ISR</strong>
+      Con <code>next: { revalidate: 60 }</code> Next.js regenera la página en background cada 60 segundos (ISR). Para contenido estático puro usa <code>revalidate: false</code> y re-deploya al publicar.
+    </div>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         ASTRO
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <h2 id="astro-setup">Astro — Setup del proyecto</h2>
+
+    <p>Astro es ideal para landing pages: genera HTML estático en build time, cero JS en el cliente salvo donde lo pidas explícitamente.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Crear el proyecto</h4>
+          <pre><code>npm create astro@latest mi-landing -- --template minimal
+cd mi-landing</code></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Variables de entorno</h4>
+          <p>Crea <code>.env</code> en la raíz:</p>
+          <pre><code>PUBLIC_WP_URL=https://tu-wp.com
+WP_USER=admin
+WP_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="astro-client">Astro — API client</h2>
+    <p>Crea <code>src/lib/wordpress.ts</code>:</p>
+    <pre><code><span class="kw">const</span> WP_URL = import.meta.env.PUBLIC_WP_URL;
+<span class="kw">const</span> AUTH   = import.meta.env.WP_USER
+  ? <span class="str">`Basic ${btoa(`${import.meta.env.WP_USER}:${import.meta.env.WP_APP_PASSWORD}`)}`</span>
+  : <span class="kw">undefined</span>;
+
+<span class="kw">export async function</span> <span class="fn">wpFetch</span>&lt;T&gt;(path: <span class="cls">string</span>): <span class="cls">Promise</span>&lt;T&gt; {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">`${WP_URL}/wp-json${path}`</span>, {
+    headers: {
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+      ...(AUTH ? { <span class="str">Authorization</span>: AUTH } : {}),
+    },
+  });
+  <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="cls">Error</span>(<span class="str">`${res.status} ${path}`</span>);
+  <span class="kw">return</span> res.json();
+}
+
+<span class="kw">export const</span> getPosts = (n = <span class="num">6</span>) =>
+  wpFetch&lt;<span class="cls">any</span>[]&gt;(<span class="str">`/wp/v2/posts?per_page=${n}&_embed`</span>);</code></pre>
+
+    <h2 id="astro-landing">Astro — Landing page</h2>
+    <p>Edita <code>src/pages/index.astro</code>:</p>
+    <pre><code><span class="cmt">---</span>
+<span class="kw">import</span> { getPosts } <span class="kw">from</span> <span class="str">'../lib/wordpress'</span>;
+<span class="kw">const</span> posts = <span class="kw">await</span> <span class="fn">getPosts</span>(<span class="num">6</span>);
+<span class="cmt">---</span>
+
+&lt;html lang=<span class="str">"es"</span>&gt;
+&lt;head&gt;
+  &lt;meta charset=<span class="str">"UTF-8"</span> /&gt;
+  &lt;title&gt;Blog&lt;/title&gt;
+  &lt;style&gt;
+    .grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    article { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+    img { width: 100%; height: 200px; object-fit: cover; }
+    .body { padding: 1.25rem; }
+    h2 { font-size: 1.1rem; margin-bottom: .5rem; }
+    a { color: #ff176b; font-weight: 600; text-decoration: none; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;main style=<span class="str">"max-width:900px;margin:4rem auto;padding:0 1.5rem"</span>&gt;
+    &lt;h1&gt;Blog&lt;/h1&gt;
+    &lt;div class=<span class="str">"grid"</span>&gt;
+      {posts.map(post =&gt; {
+        <span class="kw">const</span> img = post._embedded?.[<span class="str">'wp:featuredmedia'</span>]?.[<span class="num">0</span>];
+        <span class="kw">return</span> (
+          &lt;article&gt;
+            {img && &lt;img src={img.source_url} alt={img.alt_text} /&gt;}
+            &lt;div class=<span class="str">"body"</span>&gt;
+              &lt;h2 set:html={post.title.rendered} /&gt;
+              &lt;div set:html={post.excerpt.rendered} /&gt;
+              &lt;a href={<span class="str">`/blog/${post.slug}`</span>}&gt;Leer más →&lt;/a&gt;
+            &lt;/div&gt;
+          &lt;/article&gt;
+        );
+      })}
+    &lt;/div&gt;
+  &lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <div class="callout callout-tip">
+      <strong>Build estático</strong>
+      Astro ejecuta <code>getPosts()</code> en build time. El HTML resultante no contiene llamadas a la API — todo está embebido. Perfecto para landing pages con contenido que cambia poco.
+    </div>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         NUXT
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <h2 id="nuxt-setup">Nuxt — Setup del proyecto</h2>
+
+    <p>Nuxt 3 con el composable <code>useFetch</code> que maneja SSR, caché y estado automáticamente.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Crear el proyecto</h4>
+          <pre><code>npx nuxi@latest init mi-landing
+cd mi-landing</code></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Variables de entorno</h4>
+          <p>Edita <code>.env</code>:</p>
+          <pre><code>NUXT_PUBLIC_WP_URL=https://tu-wp.com
+NUXT_WP_USER=admin
+NUXT_WP_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx</code></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h4>Configurar <code>nuxt.config.ts</code></h4>
+          <pre><code><span class="kw">export default</span> <span class="fn">defineNuxtConfig</span>({
+  runtimeConfig: {
+    wpUser:        process.env.NUXT_WP_USER,
+    wpAppPassword: process.env.NUXT_WP_APP_PASSWORD,
+    public: {
+      wpUrl: process.env.NUXT_PUBLIC_WP_URL,
+    },
+  },
+});</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="nuxt-client">Nuxt — API client</h2>
+    <p>Crea <code>composables/useWordPress.ts</code>:</p>
+    <pre><code><span class="kw">export function</span> <span class="fn">useWordPress</span>() {
+  <span class="kw">const</span> config = <span class="fn">useRuntimeConfig</span>();
+  <span class="kw">const</span> base   = config.public.wpUrl;
+  <span class="kw">const</span> auth   = config.wpUser
+    ? <span class="str">`Basic ${btoa(`${config.wpUser}:${config.wpAppPassword}`)}`</span>
+    : <span class="kw">undefined</span>;
+
+  <span class="kw">const</span> headers: <span class="cls">Record</span>&lt;string, string&gt; = {
+    <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+    ...(auth ? { <span class="str">Authorization</span>: auth } : {}),
+  };
+
+  <span class="kw">const</span> <span class="fn">getPosts</span> = (perPage = <span class="num">6</span>) =>
+    <span class="fn">useFetch</span>(<span class="str">`${base}/wp-json/wp/v2/posts`</span>, {
+      query:   { per_page: perPage, _embed: <span class="num">1</span> },
+      headers,
+      key:     <span class="str">'posts'</span>,
+      default: () => [],
+    });
+
+  <span class="kw">return</span> { getPosts };
+}</code></pre>
+
+    <h2 id="nuxt-landing">Nuxt — Landing page</h2>
+    <p>Edita <code>pages/index.vue</code>:</p>
+    <pre><code><span class="kw">&lt;script setup lang="ts"&gt;</span>
+<span class="kw">const</span> { getPosts } = <span class="fn">useWordPress</span>();
+<span class="kw">const</span> { data: posts } = <span class="kw">await</span> <span class="fn">getPosts</span>(<span class="num">6</span>);
+<span class="kw">&lt;/script&gt;</span>
+
+<span class="kw">&lt;template&gt;</span>
+  &lt;main&gt;
+    &lt;h1&gt;Blog&lt;/h1&gt;
+    &lt;div class=<span class="str">"grid"</span>&gt;
+      &lt;article v-for=<span class="str">"post in posts"</span> :key=<span class="str">"post.id"</span>&gt;
+        &lt;img
+          v-if=<span class="str">"post._embedded?.['wp:featuredmedia']?.[0]"</span>
+          :src=<span class="str">"post._embedded['wp:featuredmedia'][0].source_url"</span>
+          :alt=<span class="str">"post._embedded['wp:featuredmedia'][0].alt_text"</span>
+        /&gt;
+        &lt;div class=<span class="str">"body"</span>&gt;
+          &lt;h2 v-html=<span class="str">"post.title.rendered"</span> /&gt;
+          &lt;div v-html=<span class="str">"post.excerpt.rendered"</span> /&gt;
+          &lt;NuxtLink :to=<span class="str">"`/blog/${post.slug}`"</span>&gt;Leer más →&lt;/NuxtLink&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+  &lt;/main&gt;
+<span class="kw">&lt;/template&gt;</span>
+
+<span class="kw">&lt;style scoped&gt;</span>
+.grid   { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+article { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+img     { width: 100%; height: 200px; object-fit: cover; }
+.body   { padding: 1.25rem; }
+a       { color: #ff176b; font-weight: 600; text-decoration: none; }
+<span class="kw">&lt;/style&gt;</span></code></pre>
+
+    <hr class="divider">
+
+    <!-- ══════════════════════════════════════════════════════════════════════════
+         VANILLA JS
+    ══════════════════════════════════════════════════════════════════════════ -->
+    <h2 id="vanilla-setup">Vanilla JS — Setup</h2>
+
+    <p>Sin frameworks ni bundlers. Un archivo HTML + CSS + JS puro. Ideal para landing pages ligeras o prototipos rápidos.</p>
+
+    <div class="callout callout-warning">
+      <strong>Nota sobre autenticación</strong>
+      En Vanilla JS el código corre en el browser. Si tu API es pública (CORS abierto, sin auth requerida) funciona directo. Si requieres auth, necesitas un proxy de servidor o una función serverless para no exponer credenciales.
+    </div>
+
+    <h2 id="vanilla-client">Vanilla JS — API client</h2>
+    <p>Crea <code>js/api.js</code>:</p>
+    <pre><code><span class="cmt">// js/api.js</span>
+<span class="kw">const</span> WP_URL = <span class="str">'https://tu-wp.com'</span>;
+
+<span class="kw">async function</span> <span class="fn">wpFetch</span>(path) {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">`${WP_URL}/wp-json${path}`</span>, {
+    headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+  });
+  <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="cls">Error</span>(<span class="str">`API Error: ${res.status}`</span>);
+  <span class="kw">return</span> res.json();
+}
+
+<span class="kw">export const</span> getPosts   = (n = <span class="num">6</span>) => <span class="fn">wpFetch</span>(<span class="str">`/wp/v2/posts?per_page=${n}&_embed`</span>);
+<span class="kw">export const</span> getSiteInfo = ()     => <span class="fn">wpFetch</span>(<span class="str">`/wp/v2/settings`</span>); <span class="cmt">// requiere auth</span>
+<span class="kw">export const</span> getHealth   = ()     => <span class="fn">wpFetch</span>(<span class="str">`/headless/v1/health`</span>);</code></pre>
+
+    <h2 id="vanilla-landing">Vanilla JS — Landing page</h2>
+    <p>Un solo archivo HTML autocontenido:</p>
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=<span class="str">"es"</span>&gt;
+&lt;head&gt;
+  &lt;meta charset=<span class="str">"UTF-8"</span>&gt;
+  &lt;meta name=<span class="str">"viewport"</span> content=<span class="str">"width=device-width, initial-scale=1"</span>&gt;
+  &lt;title&gt;Blog&lt;/title&gt;
+  &lt;style&gt;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body  { font-family: system-ui, sans-serif; background: #fafafa; color: #1a1a1a; }
+    main  { max-width: 900px; margin: 4rem auto; padding: 0 1.5rem; }
+    h1    { font-size: 2rem; margin-bottom: 2rem; }
+    .grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+    .card img  { width: 100%; height: 180px; object-fit: cover; }
+    .card-body { padding: 1.2rem; }
+    .card h2   { font-size: 1rem; margin-bottom: .5rem; }
+    .card p    { font-size: .875rem; color: #6b7280; margin-bottom: 1rem; }
+    .card a    { font-size: .875rem; font-weight: 600; color: #ff176b; text-decoration: none; }
+    .skeleton  { background: #e5e7eb; border-radius: 8px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .5 } }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;main&gt;
+    &lt;h1&gt;Blog&lt;/h1&gt;
+    &lt;div id=<span class="str">"grid"</span> class=<span class="str">"grid"</span>&gt;&lt;/div&gt;
+  &lt;/main&gt;
+
+  &lt;script type=<span class="str">"module"</span>&gt;
+    <span class="kw">const</span> WP_URL = <span class="str">'https://tu-wp.com'</span>;
+    <span class="kw">const</span> grid   = document.<span class="fn">getElementById</span>(<span class="str">'grid'</span>);
+
+    <span class="cmt">// Render skeletons mientras carga</span>
+    grid.innerHTML = <span class="cls">Array</span>(<span class="num">6</span>).<span class="fn">fill</span>(<span class="str">`
+      &lt;div class="card"&gt;
+        &lt;div class="skeleton" style="height:180px"&gt;&lt;/div&gt;
+        &lt;div class="card-body"&gt;
+          &lt;div class="skeleton" style="height:18px;margin-bottom:8px"&gt;&lt;/div&gt;
+          &lt;div class="skeleton" style="height:14px;width:70%"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;`</span>).<span class="fn">join</span>(<span class="str">''</span>);
+
+    <span class="kw">try</span> {
+      <span class="kw">const</span> res   = <span class="kw">await</span> fetch(<span class="str">`${WP_URL}/wp-json/wp/v2/posts?per_page=6&_embed`</span>);
+      <span class="kw">const</span> posts = <span class="kw">await</span> res.json();
+
+      grid.innerHTML = posts.<span class="fn">map</span>(post => {
+        <span class="kw">const</span> img = post._embedded?.[<span class="str">'wp:featuredmedia'</span>]?.[<span class="num">0</span>];
+        <span class="kw">return</span> <span class="str">`
+          &lt;div class="card"&gt;
+            ${img ? <span class="str">`&lt;img src="${img.source_url}" alt="${img.alt_text}"&gt;`</span> : <span class="str">''</span>}
+            &lt;div class="card-body"&gt;
+              &lt;h2&gt;${post.title.rendered}&lt;/h2&gt;
+              &lt;p&gt;${post.excerpt.rendered.replace(/&lt;[^&gt;]+&gt;/g, <span class="str">''</span>).slice(<span class="num">0</span>, <span class="num">120</span>)}...&lt;/p&gt;
+              &lt;a href="/blog/${post.slug}"&gt;Leer más →&lt;/a&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;`</span>;
+      }).<span class="fn">join</span>(<span class="str">''</span>);
+    } <span class="kw">catch</span> (err) {
+      grid.innerHTML = <span class="str">`&lt;p style="color:red"&gt;Error cargando posts: ${err.message}&lt;/p&gt;`</span>;
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+    <hr class="divider">
+
+    <!-- ── Endpoints de referencia ── -->
+    <h2 id="endpoints-ref">Endpoints de referencia rápida</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Endpoint</th><th>Params útiles</th><th>Uso típico</th></tr></thead>
+        <tbody>
+          <tr><td><code>/wp/v2/posts</code></td><td><code>per_page</code>, <code>page</code>, <code>categories</code>, <code>_embed</code></td><td>Listado del blog</td></tr>
+          <tr><td><code>/wp/v2/posts?slug=x</code></td><td><code>_embed</code></td><td>Post individual por slug</td></tr>
+          <tr><td><code>/wp/v2/pages?slug=x</code></td><td><code>_embed</code></td><td>Páginas (home, about, etc.)</td></tr>
+          <tr><td><code>/wp/v2/categories</code></td><td><code>per_page=100</code></td><td>Menú de categorías</td></tr>
+          <tr><td><code>/wp/v2/tags</code></td><td><code>per_page=100</code></td><td>Nube de etiquetas</td></tr>
+          <tr><td><code>/wp/v2/media/{id}</code></td><td>—</td><td>Metadatos de imagen</td></tr>
+          <tr><td><code>/wp/v2/search</code></td><td><code>search=término</code></td><td>Buscador</td></tr>
+          <tr><td><code>/headless/v1/health</code></td><td>—</td><td>Verificar conexión con WP</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Paginación</h3>
+    <p>La REST API devuelve headers con la info de paginación:</p>
+    <pre><code>X-WP-Total:      42   <span class="cmt">← total de posts</span>
+X-WP-TotalPages:  7   <span class="cmt">← total de páginas</span></code></pre>
+    <pre><code><span class="cmt">// Leer headers en fetch:</span>
+<span class="kw">const</span> res   = <span class="kw">await</span> fetch(<span class="str">`${WP_URL}/wp-json/wp/v2/posts?page=2`</span>);
+<span class="kw">const</span> total = res.headers.<span class="fn">get</span>(<span class="str">'X-WP-Total'</span>);
+<span class="kw">const</span> pages = res.headers.<span class="fn">get</span>(<span class="str">'X-WP-TotalPages'</span>);</code></pre>
+
+    <hr class="divider">
+
+    <!-- ── Troubleshooting ── -->
+    <h2 id="troubleshooting">Troubleshooting</h2>
+
+    <h3>Error CORS en el browser</h3>
+    <div class="callout callout-danger">
+      <strong>Access to fetch blocked by CORS policy</strong>
+      Ve a <strong>WP Headless Mode → Configuración → Orígenes CORS permitidos</strong> y agrega la URL de tu frontend (incluyendo el puerto: <code>http://localhost:3000</code>). Guarda y recarga.
+    </div>
+
+    <h3>Error 401 Unauthorized</h3>
+    <div class="callout callout-warning">
+      <strong>rest_forbidden</strong>
+      Tienes activado "Requerir auth en REST API". Genera un Application Password en WordPress y pásalo en el header <code>Authorization: Basic &lt;base64&gt;</code> desde el servidor.
+    </div>
+
+    <h3>Error 429 Too Many Requests</h3>
+    <div class="callout callout-warning">
+      <strong>rate_limit_exceeded</strong>
+      Has superado el límite de requests por hora. Aumenta el valor en <strong>Configuración → Requests por hora</strong>, o autentica tus requests (obtienen 5× el límite).
+    </div>
+
+    <h3>Los posts no muestran imagen destacada</h3>
+    <p>Asegúrate de incluir <code>_embed</code> en el request. Las imágenes están en <code>post._embedded['wp:featuredmedia'][0]</code>. Si el post no tiene imagen asignada, ese array estará vacío — usa optional chaining (<code>?.</code>) para evitar errores.</p>
+
+    <h3>HTML en <code>title.rendered</code> y <code>excerpt.rendered</code></h3>
+    <p>WordPress devuelve estos campos con HTML (entidades, etiquetas <code>&lt;p&gt;</code>, etc.). Para renderizarlos correctamente usa:</p>
+    <div class="tab-container">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="react">React / Next.js</button>
+        <button class="tab-btn" data-tab="vue">Vue / Nuxt</button>
+        <button class="tab-btn" data-tab="astro2">Astro</button>
+        <button class="tab-btn" data-tab="js">JS</button>
+      </div>
+      <div class="tab-panel active" data-tab="react">
+        <pre><code>&lt;h2 dangerouslySetInnerHTML={{ __html: post.title.rendered }} /&gt;</code></pre>
+      </div>
+      <div class="tab-panel" data-tab="vue">
+        <pre><code>&lt;h2 v-html=<span class="str">"post.title.rendered"</span> /&gt;</code></pre>
+      </div>
+      <div class="tab-panel" data-tab="astro2">
+        <pre><code>&lt;h2 set:html={post.title.rendered} /&gt;</code></pre>
+      </div>
+      <div class="tab-panel" data-tab="js">
+        <pre><code>el.innerHTML = post.title.rendered;</code></pre>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

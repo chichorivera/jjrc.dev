@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Javier Rivera · Full Stack Developer</title>
+  <meta name="description" content="Full Stack Developer con más de 25 años de experiencia construyendo soluciones digitales. Arquitectura de software, ecommerce, integraciones y desarrollo asistido por IA." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- AOS -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+
+  <link rel="stylesheet" href="assets/css/styles.css?v=000000074" />
+  <script>
+    (function () {
+      var savedTheme = localStorage.getItem('jjrc-theme');
+      if (savedTheme === 'dark' || savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="header" id="top">
+    <div class="header__inner">
+      <a href="#top" class="logo">
+        <span class="logo__dot"></span>
+        <span class="logo__text">jjrc.dev</span>
+      </a>
+      <div class="header__actions">
+        <nav class="nav">
+          <a href="#about"   class="nav__link">about</a>
+          <a href="#experience" class="nav__link">experience</a>
+          <a href="#stack"   class="nav__link">stack</a>
+          <a href="#contact" class="nav__cta">contacto</a>
+        </nav>
+
+        <div class="theme-switcher" aria-label="Cambiar tema y ver versión llms">
+          <button type="button" class="theme-switcher__btn is-active" data-theme-toggle="light" aria-label="Ver versión clara" aria-pressed="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.5"></circle>
+              <path d="M12 2.5v2.5M12 19v2.5M21.5 12H19M5 12H2.5M18.72 5.28l-1.77 1.77M7.05 16.95l-1.77 1.77M18.72 18.72l-1.77-1.77M7.05 7.05 5.28 5.28"></path>
+            </svg>
+          </button>
+          <button type="button" class="theme-switcher__btn" data-theme-toggle="dark" aria-label="Ver versión oscura" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8a8.7 8.7 0 1 0 10.3 10.3Z"></path>
+            </svg>
+          </button>
+          <a href="llms.txt" class="theme-switcher__btn theme-switcher__btn--link" aria-label="Ver versión llms" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 5.5h14v13H5z"></path>
+              <path d="M8 9.5h8M8 12h8M8 14.5h5"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <button class="nav__toggle" aria-label="Menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <!-- Mobile menu -->
+    <div class="nav__mobile">
+      <a href="#about"      class="nav__link">about</a>
+      <a href="#experience" class="nav__link">experience</a>
+      <a href="#stack"      class="nav__link">stack</a>
+      <a href="#contact"    class="nav__cta">contacto</a>
+      <div class="theme-switcher theme-switcher--mobile" aria-label="Cambiar tema y ver versión llms">
+        <button type="button" class="theme-switcher__btn is-active" data-theme-toggle="light" aria-label="Ver versión clara" aria-pressed="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.5"></circle>
+            <path d="M12 2.5v2.5M12 19v2.5M21.5 12H19M5 12H2.5M18.72 5.28l-1.77 1.77M7.05 16.95l-1.77 1.77M18.72 18.72l-1.77-1.77M7.05 7.05 5.28 5.28"></path>
+          </svg>
+        </button>
+        <button type="button" class="theme-switcher__btn" data-theme-toggle="dark" aria-label="Ver versión oscura" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8a8.7 8.7 0 1 0 10.3 10.3Z"></path>
+          </svg>
+        </button>
+        <a href="llms.txt" class="theme-switcher__btn theme-switcher__btn--link" aria-label="Ver versión llms" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 5.5h14v13H5z"></path>
+            <path d="M8 9.5h8M8 12h8M8 14.5h5"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section class="hero" id="hero">
+    <div class="hero__aura" aria-hidden="true"></div>
+
+    <div class="hero__label" data-aos="fade-down" data-aos-duration="800">
+      <span class="hero__label-dot"></span>
+      <span class="hero__label-text">FULL STACK DEVELOPER — 25+ AÑOS</span>
+    </div>
+
+    <h1 class="hero__title">
+      <span class="hero__title-line"><span class="hero__title-word">Javier</span></span>
+      <span class="hero__title-line"><span class="hero__title-word">Rivera</span></span>
+    </h1>
+
+    <div class="hero__mid">
+      <p class="hero__desc" data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">
+        Más de dos décadas diseñando experiencias,<br>
+        programando e integrando soluciones digitales para<br>
+        empresas en distintos países.
+      </p>
+
+      <div class="hero__stats" data-aos="fade-up" data-aos-duration="900" data-aos-delay="300">
+        <div class="hero__stat">
+          <span class="hero__stat-value">25+</span>
+          <span class="hero__stat-label">AÑOS</span>
+        </div>
+        <div class="hero__stat">
+          <span class="hero__stat-value">150+</span>
+          <span class="hero__stat-label">PROYECTOS</span>
+        </div>
+        <div class="hero__stat">
+          <span class="hero__stat-value">6+</span>
+          <span class="hero__stat-label">PAÍSES</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rotating phrase -->
+    <div class="hero__rotating" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+      <span class="hero__rotating-phrase" id="rotatingPhrase">Full Stack Developer</span>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       QUIÉN SOY
+  ============================================================ -->
+  <section class="section" id="about">
+    <div class="section__inner two-col">
+      <div class="two-col__left" data-aos="fade-right" data-aos-duration="900">
+        <span class="section__label">01 — ABOUT</span>
+        <h2 class="section__title">Quién<br>Soy</h2>
+      </div>
+      <div class="two-col__right" data-aos="fade-left" data-aos-duration="900" data-aos-delay="100">
+        <p class="text-lead">Full Stack Developer con más de 25 años de experiencia construyendo soluciones digitales.</p>
+        <p class="text-body">Mi carrera comenzó como programador, evolucionó hacia gestión de proyectos y dirección tecnológica, y hoy se centra en la arquitectura de software y el desarrollo asistido por inteligencia artificial.</p>
+        <p class="text-body">Mi enfoque combina experiencia técnica profunda con una visión práctica del negocio y la capacidad de integrar sistemas complejos.</p>
+        <div class="tags" data-aos="fade-up" data-aos-duration="700" data-aos-delay="200">
+          <span class="tag tag--accent">Arquitectura de Software</span>
+          <span class="tag tag--accent">Full Stack</span>
+          <span class="tag tag--accent">Ecommerce</span>
+          <span class="tag tag--accent">Integraciones</span>
+          <span class="tag tag--accent">IA</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       TIMELINE
+  ============================================================ -->
+  <section class="section" id="timeline">
+    <div class="section__inner" data-aos="fade-up" data-aos-duration="800">
+      <span class="section__label">02 — TIMELINE</span>
+      <h2 class="section__title section__title--wide">25 Años Construyendo<br>Tecnología</h2>
+    </div>
+    <div class="section__inner">
+      <div class="timeline-grid">
+        <div class="tl-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="0">
+          <span class="tl-card__year">2000s</span>
+          <h3 class="tl-card__title">Los Años de Programador</h3>
+          <p class="tl-card__desc">Desarrollo web con PHP y MySQL, proyectos internacionales como freelance con clientes de España, Italia, Argentina, Panamá, México y Chile.</p>
+        </div>
+        <div class="tl-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+          <span class="tl-card__year">2010s</span>
+          <h3 class="tl-card__title">Los Años de Arquitectura</h3>
+          <p class="tl-card__desc">Evolución hacia liderazgo técnico, arquitectura de sistemas y gestión de proyectos en agencias digitales y empresas tecnológicas.</p>
+        </div>
+        <div class="tl-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+          <span class="tl-card__year">2020s</span>
+          <h3 class="tl-card__title">Los Años de Integración</h3>
+          <p class="tl-card__desc">Foco en ecommerce, integraciones empresariales, plataformas de pago, logística y automatización.</p>
+        </div>
+        <div class="tl-card tl-card--accent" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
+          <span class="tl-card__year tl-card__year--white">Hoy</span>
+          <h3 class="tl-card__title tl-card__title--white">La Era de la IA</h3>
+          <p class="tl-card__desc tl-card__desc--white">Exploración activa del desarrollo asistido por inteligencia artificial, combinando experiencia humana con herramientas como Copilot y Claude.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       TECH CLOUD (Nube de Conceptos)
+  ============================================================ -->
+  <section class="section section--card" id="techcloud">
+    <div class="section__inner">
+      <p class="tech-label" data-aos="fade-up" data-aos-duration="700">Tecnologías con las que he trabajado</p>
+      <div class="tech-cloud" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">
+        <div class="tech-row">
+          <span class="tech-word tech-word--lg">PHP</span>
+          <span class="tech-word tech-word--lg">JavaScript</span>
+          <span class="tech-word tech-word--md">NodeJS</span>
+          <span class="tech-word tech-word--lg">Python</span>
+          <span class="tech-word tech-word--sm">FastAPI</span>
+          <span class="tech-word tech-word--md">Express</span>
+          <span class="tech-word tech-word--lg">Laravel</span>
+          <span class="tech-word tech-word--sm">Payload</span>
+        </div>
+        <div class="tech-row">
+          <span class="tech-word tech-word--md">Magento</span>
+          <span class="tech-word tech-word--md">Prestashop</span>
+          <span class="tech-word tech-word--accent tech-word--lg">WordPress</span>
+          <span class="tech-word tech-word--lg">WooCommerce</span>
+          <span class="tech-word tech-word--lg">Next.JS</span>
+          <span class="tech-word tech-word--md">n8n</span>
+          <span class="tech-word tech-word--sm">Strapi</span>
+          <span class="tech-word tech-word--sm">Bootstrap</span>
+          <span class="tech-word tech-word--md">REST APIs</span>
+        </div>
+        <div class="tech-row">
+          <span class="tech-word tech-word--lg">MySQL</span>
+          <span class="tech-word tech-word--md">MariaDB</span>
+          <span class="tech-word tech-word--md">SQL Server</span>
+          <span class="tech-word tech-word--sm">ACF</span>
+          <span class="tech-word tech-word--sm">WP-CLI</span>
+          <span class="tech-word tech-word--md">Apache</span>
+          <span class="tech-word tech-word--md">Nginx</span>
+          <span class="tech-word tech-word--sm">LAMP Stack</span>
+          <span class="tech-word tech-word--sm">RedHat</span>
+        </div>
+        <div class="tech-row">
+          <span class="tech-word tech-word--md">Ubuntu</span>
+          <span class="tech-word tech-word--sm">Kali Linux</span>
+          <span class="tech-word tech-word--sm">SSH</span>
+          <span class="tech-word tech-word--lg">Docker</span>
+          <span class="tech-word tech-word--sm">Certbot</span>
+          <span class="tech-word tech-word--md">Visual Studio Code</span>
+          <span class="tech-word tech-word--md">Cursor</span>
+          <span class="tech-word tech-word--sm">Postman</span>
+          <span class="tech-word tech-word--sm">Insomnia</span>
+        </div>
+        <div class="tech-row">
+          <span class="tech-word tech-word--lg">ChatGPT</span>
+          <span class="tech-word tech-word--md">GitHub Copilot</span>
+          <span class="tech-word tech-word--accent tech-word--lg">Claude Code</span>
+          <span class="tech-word tech-word--sm">Ollama</span>
+          <span class="tech-word tech-word--md">Stable Diffusion</span>
+          <span class="tech-word tech-word--sm">LangChain</span>
+          <span class="tech-word tech-word--md">Pencil</span>
+          <span class="tech-word tech-word--md">Figma</span>
+          <span class="tech-word tech-word--sm">Flaticon</span>
+        </div>
+        <div class="tech-row">
+          <span class="tech-word tech-word--sm">Slack</span>
+          <span class="tech-word tech-word--sm">ClickUp</span>
+          <span class="tech-word tech-word--sm">TeamWork</span>
+          <span class="tech-word tech-word--md">Google Cloud</span>
+          <span class="tech-word tech-word--lg">AWS</span>
+          <span class="tech-word tech-word--md">Azure</span>
+          <span class="tech-word tech-word--sm">Contabo</span>
+          <span class="tech-word tech-word--sm">Hetzner</span>
+          <span class="tech-word tech-word--md">DigitalOcean</span>
+        </div>
+        <div class="tech-row">
+          <span class="tech-word tech-word--sm">Netlify</span>
+          <span class="tech-word tech-word--md">Vercel</span>
+          <span class="tech-word tech-word--lg">Cloudflare</span>
+          <span class="tech-word tech-word--lg">GitHub</span>
+          <span class="tech-word tech-word--sm">WPScan</span>
+          <span class="tech-word tech-word--sm">Patchstack</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       TESTIMONIOS
+  ============================================================ -->
+  <section class="section" id="testimonials">
+    <div class="section__inner" data-aos="fade-up" data-aos-duration="800">
+      <span class="section__label">RECOMENDACIONES</span>
+      <h2 class="section__title section__title--wide">Lo Que Dicen Quienes<br>Trabajaron Conmigo</h2>
+    </div>
+
+    <div class="section__inner">
+      <div class="testi-carousel" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+        <div class="testi-viewport">
+          <div class="testi-track" id="testiTrack">
+
+            <article class="testi-card">
+              <span class="testi-card__mark" aria-hidden="true">&ldquo;</span>
+              <div class="testi-card__body">
+                <p class="testi-card__excerpt">Demostró un sólido dominio técnico y rapidez para comprender las necesidades del negocio y traducirlas en soluciones eficientes y bien ejecutadas.</p>
+                <div class="testi-card__full">
+                  <p>He tenido la oportunidad de trabajar con Javier como cliente en un proyecto donde participó como desarrollador backend, y la experiencia fue positiva y grata. Durante el desarrollo demostró un sólido dominio técnico, especialmente en la construcción de APIs, desarrollo de plugins, integraciones entre plataformas y soluciones de eCommerce. Más allá de sus conocimientos técnicos, destacó por su rapidez para comprender las necesidades del negocio y traducirlas en soluciones eficientes y bien ejecutadas.</p>
+                  <p>También quiero destacar su calidad humana y disposición para colaborar, lo que hizo que la comunicación fuera fluida y que el proyecto avanzara de manera ordenada con excelentes resultados.</p>
+                  <p>Sin duda, recomiendo a Javier a cualquier empresa o equipo que busque un desarrollador backend con gran capacidad técnica, compromiso y una excelente actitud para trabajar en equipo.</p>
+                </div>
+              </div>
+              <button type="button" class="testi-card__toggle" aria-expanded="false">
+                <span class="testi-card__toggle-label">Leer más</span>
+                <span class="testi-card__toggle-icon" aria-hidden="true">↓</span>
+              </button>
+              <footer class="testi-card__author">
+                <span class="testi-card__name">Hernán Cortés</span>
+                <span class="testi-card__role">Jefe de Departamento TIC · Recasur</span>
+              </footer>
+            </article>
+
+            <article class="testi-card">
+              <span class="testi-card__mark" aria-hidden="true">&ldquo;</span>
+              <div class="testi-card__body">
+                <p class="testi-card__excerpt">Fue el desarrollador principal del ecommerce de la compañía. Destacó por su solidez técnica, responsabilidad y capacidad para hacerse cargo de una plataforma crítica para el negocio.</p>
+                <div class="testi-card__full">
+                  <p>Trabajé con Javier Rivera en Turistik, donde fue el desarrollador principal del ecommerce de la compañía. Javier destacó por su solidez técnica, responsabilidad y capacidad para hacerse cargo de una plataforma crítica para el negocio.</p>
+                  <p>Siempre mostró buen criterio para resolver problemas, proponer mejoras y conectar las necesidades del negocio con soluciones tecnológicas concretas. No era solo un ejecutor técnico; tenía ownership sobre el producto y entendía la importancia de la experiencia de usuario, la estabilidad y la continuidad operacional.</p>
+                  <p>Lo recomiendo con confianza para roles de desarrollo, liderazgo técnico y evolución de productos digitales.</p>
+                </div>
+              </div>
+              <button type="button" class="testi-card__toggle" aria-expanded="false">
+                <span class="testi-card__toggle-label">Leer más</span>
+                <span class="testi-card__toggle-icon" aria-hidden="true">↓</span>
+              </button>
+              <footer class="testi-card__author">
+                <span class="testi-card__name">Eudo García</span>
+                <span class="testi-card__role">Jefe de Tecnología e Innovación · Turistik</span>
+              </footer>
+            </article>
+
+            <article class="testi-card">
+              <span class="testi-card__mark" aria-hidden="true">&ldquo;</span>
+              <div class="testi-card__body">
+                <p class="testi-card__excerpt">Tomamos un proyecto que llevaba varios meses estancado y logramos llevar una versión a producción que cumplió con los requerimientos definidos.</p>
+                <div class="testi-card__full">
+                  <p>Tuve la oportunidad de trabajar con Javier en un proyecto de desarrollo web, participando yo desde la perspectiva del cliente. Destaco especialmente su compromiso, disposición para enfrentar desafíos y capacidad para encontrar soluciones efectivas ante problemas complejos.</p>
+                  <p>Tomamos un proyecto que llevaba varios meses estancado y, gracias a su dedicación, conocimiento técnico y enfoque orientado a resultados, logramos llevar una versión a producción que cumplió con los requerimientos definidos y permitió alcanzar los objetivos planteados.</p>
+                  <p>Además de sus habilidades técnicas, Javier demostró una excelente actitud de colaboración, manteniendo siempre una comunicación clara y una fuerte orientación al cumplimiento de los compromisos. Sin duda, es un profesional que aporta valor a cualquier equipo o proyecto en el que participe.</p>
+                </div>
+              </div>
+              <button type="button" class="testi-card__toggle" aria-expanded="false">
+                <span class="testi-card__toggle-label">Leer más</span>
+                <span class="testi-card__toggle-icon" aria-hidden="true">↓</span>
+              </button>
+              <footer class="testi-card__author">
+                <span class="testi-card__name">Manuel Pérez de Arce</span>
+                <span class="testi-card__role">Encargado de Proyectos y Procesos · Tepillé</span>
+              </footer>
+            </article>
+
+          </div>
+        </div>
+
+        <div class="testi-controls">
+          <button type="button" class="testi-arrow testi-arrow--prev" id="testiPrev" aria-label="Testimonios anteriores" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+          </button>
+          <div class="testi-dots" id="testiDots"></div>
+          <button type="button" class="testi-arrow testi-arrow--next" id="testiNext" aria-label="Siguientes testimonios" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       EMPRESAS Y PROYECTOS
+  ============================================================ -->
+  <section class="section" id="experience">
+    <div class="section__inner" data-aos="fade-up" data-aos-duration="800">
+      <span class="section__label">03 — WORK</span>
+      <h2 class="section__title">Empresas y Proyectos</h2>
+    </div>
+
+    <div class="section__inner">
+      <div class="emp-list">
+        <div class="emp-row" data-aos="fade-up" data-aos-duration="700" data-aos-delay="0">
+          <span class="emp-row__year">2002–2009</span>
+          <div class="emp-row__info">
+            <h3 class="emp-row__name">Freelance</h3>
+            <p class="emp-row__desc">Proyectos internacionales — España, Italia, Argentina, Panamá, México y Chile.</p>
+          </div>
+        </div>
+        <div class="emp-row" data-aos="fade-up" data-aos-duration="700" data-aos-delay="50">
+          <span class="emp-row__year">2008–hoy</span>
+          <div class="emp-row__info">
+            <h3 class="emp-row__name">StockerGroup</h3>
+            <p class="emp-row__desc">Empresa suizo-alemana radicada en Chile. PHP Dev → Gerencia TI. Banco Internacional, Sercotec, Sepyme, Sebrae, UNIDO.</p>
+          </div>
+        </div>
+        <div class="emp-row" data-aos="fade-up" data-aos-duration="700" data-aos-delay="100">
+          <span class="emp-row__year">2013–2016</span>
+          <div class="emp-row__info">
+            <h3 class="emp-row__name">Elemental</h3>
+            <p class="emp-row__desc">Full Stack &amp; PM. Chilexpress, Concha y Toro, Grupo Forus, Jansport, Melón, Besalco.</p>
+          </div>
+        </div>
+        <div class="emp-row" data-aos="fade-up" data-aos-duration="700" data-aos-delay="150">
+          <span class="emp-row__year">2017–2018</span>
+          <div class="emp-row__info">
+            <h3 class="emp-row__name">Bravo / Quiebre</h3>
+            <p class="emp-row__desc">Full stack externo. Pfizer, Andrómaco, Besalco, Titanium, Mas Vida, Tapsin.</p>
+          </div>
+        </div>
+        <div class="emp-row" data-aos="fade-up" data-aos-duration="700" data-aos-delay="200">
+          <span class="emp-row__year">2019–hoy</span>
+          <div class="emp-row__info">
+            <h3 class="emp-row__name">Nexbu</h3>
+            <p class="emp-row__desc">Full Stack + ecommerce e integraciones. Grupo Chery (Jaecoo/Omoda España), Recasur, Representaciones Austral, Turistik, Ópticas Schilling, ACHS, Lureye, MiFoto, Santillana, TePillé, UC.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-grid" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+        <div class="cat-row">
+          <div class="card">
+            <span class="card__label">EDUCACIÓN</span>
+            <p class="card__text">Santillana Global · Fundación Santillana · Eduexplora · aeiotu · UC Chile · Achs</p>
+          </div>
+          <div class="card">
+            <span class="card__label">FARMACÉUTICAS</span>
+            <p class="card__text">Pfizer · Tapsín · Nueva MasVida · Andrómaco</p>
+          </div>
+        </div>
+        <div class="cat-row">
+          <div class="card">
+            <span class="card__label">INMOBILIARIAS &amp; CONSTRUCTORAS</span>
+            <p class="card__text">Besalco · Angular · RCV · SAE · LarGroup · Aumenta · Umbrales · Montalva Quindos · Brotec Icafal</p>
+          </div>
+          <div class="card">
+            <span class="card__label">AUTOMOTRIZ &amp; REPUESTOS</span>
+            <p class="card__text">Omoda · Jaecoo · Recasur · Austral · Rihe</p>
+          </div>
+        </div>
+        <div class="cat-row">
+          <div class="card">
+            <span class="card__label">GOBIERNO</span>
+            <p class="card__text">Sercotec · Sepyme · Sebrae · UNIDO</p>
+          </div>
+          <div class="card">
+            <span class="card__label">RETAIL</span>
+            <p class="card__text">Grupo Forus (Hush Puppies, Cat, Brooks, Azaleia, Jansport) · Hormigones Melón · Cocinarium · MiFoto · Fotomar · Ópticas Schilling · San Camilo · Lureye</p>
+          </div>
+        </div>
+        <div class="cat-row">
+          <div class="card">
+            <span class="card__label">FINANZAS &amp; SALUD</span>
+            <p class="card__text">Colmena Golden Cross · World Bank · Cruz del Sur · Isapre Banmédica · Isapre Cruz Blanca</p>
+          </div>
+          <div class="card">
+            <span class="card__label">TURISMO</span>
+            <p class="card__text">Turistik</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       STACK / ARQUITECTURA
+  ============================================================ -->
+  <section class="section" id="stack">
+    <div class="section__inner two-col">
+      <div class="two-col__left" data-aos="fade-right" data-aos-duration="900">
+        <span class="section__label">04 — STACK</span>
+        <h2 class="section__title">Arquitectura<br>&amp; Full Stack</h2>
+      </div>
+      <div class="two-col__right" data-aos="fade-left" data-aos-duration="900" data-aos-delay="100">
+        <p class="text-lead">Mi enfoque siempre ha sido entender el sistema completo.</p>
+        <p class="text-body">No solo escribir código, sino diseñar cómo interactúan todas las piezas de una solución digital. La experiencia me ha llevado a evolucionar desde programador hacia un rol cercano a arquitecto de software.</p>
+        <div class="tags" data-aos="fade-up" data-aos-duration="700" data-aos-delay="200">
+          <span class="tag">backend</span>
+          <span class="tag">frontend</span>
+          <span class="tag">databases</span>
+          <span class="tag">integrations</span>
+          <span class="tag">infra</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       ECOMMERCE & INTEGRACIONES
+  ============================================================ -->
+  <section class="section" id="ecommerce">
+    <div class="section__inner" data-aos="fade-up" data-aos-duration="800">
+      <span class="section__label">05 — INTEGRATIONS</span>
+      <div class="ecom-head">
+        <h2 class="section__title section__title--wide">Ecommerce &amp;<br>Integraciones</h2>
+        <div class="ecom-desc" data-aos="fade-left" data-aos-duration="800" data-aos-delay="100">
+          <p class="text-lead">Implementación, customización e integración de plataformas de ecommerce con sistemas de logística, pago y facturación.</p>
+          <p class="text-body">Experiencia conectando plataformas con ERP, bancos, couriers y sistemas tributarios en Chile y Latinoamérica.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section__inner">
+      <div class="ecom-grid">
+        <div class="ecom-col" data-aos="fade-up" data-aos-duration="800" data-aos-delay="0">
+          <div class="card">
+            <span class="card__label">ECOMMERCE</span>
+            <p class="card__text">Shopify · WooCommerce<br>Magento · Prestashop</p>
+          </div>
+          <div class="card">
+            <span class="card__label">LOGÍSTICA</span>
+            <p class="card__text">Shipit · Envíame<br>FedEx · DHL · UPS</p>
+          </div>
+        </div>
+        <div class="ecom-col" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+          <div class="card">
+            <span class="card__label">PAGOS</span>
+            <p class="card__text">PayPal · Transbank · MercadoPago<br>Flow · EBANX · Toku</p>
+          </div>
+          <div class="card">
+            <span class="card__label">BANCOS</span>
+            <p class="card__text">BCI · Santander<br>Banco de Chile</p>
+          </div>
+        </div>
+        <div class="ecom-col" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+          <div class="card">
+            <span class="card__label">ENTERPRISE</span>
+            <p class="card__text">SAP · Zoho<br>MercadoLibre · Zapier</p>
+          </div>
+          <div class="card">
+            <span class="card__label">FACTURACIÓN</span>
+            <p class="card__text">LibreDTE · Facto · BSale</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-row" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+        <div class="api-row__info">
+          <h4 class="api-row__title">APIs Personalizadas</h4>
+          <p class="api-row__desc">Desarrollo de APIs desde cero cuando los sistemas no ofrecen integración nativa.</p>
+        </div>
+        <div class="tags">
+          <span class="tag">PHP</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Python</span>
+          <span class="tag">SQL</span>
+          <span class="tag">MySQL</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       IA / AI DEV
+  ============================================================ -->
+  <section class="section" id="ai">
+    <div class="section__inner two-col">
+      <div class="two-col__left" data-aos="fade-right" data-aos-duration="900">
+        <span class="section__label">06 — AI DEV</span>
+        <h2 class="section__title">Desarrollo<br>Asistido<br>por IA</h2>
+        <p class="text-body">La inteligencia artificial no reemplaza la experiencia humana, pero amplifica la capacidad de crear soluciones.</p>
+      </div>
+      <div class="two-col__right" data-aos="fade-left" data-aos-duration="900" data-aos-delay="100">
+        <div class="ia-flow">
+
+          <div class="ia-step" data-aos="fade-up" data-aos-duration="700" data-aos-delay="0">
+            <span class="ia-step__num">01</span>
+            <span class="ia-step__title">Idea</span>
+          </div>
+          <div class="ia-step__arrow">↓</div>
+
+          <div class="ia-step" data-aos="fade-up" data-aos-duration="700" data-aos-delay="50">
+            <span class="ia-step__num">02</span>
+            <span class="ia-step__title">AI Planning</span>
+            <span class="ia-step__tool">Claude</span>
+          </div>
+          <div class="ia-step__arrow">↓</div>
+
+          <div class="ia-step" data-aos="fade-up" data-aos-duration="700" data-aos-delay="100">
+            <span class="ia-step__num">03</span>
+            <span class="ia-step__title">UI Design</span>
+            <span class="ia-step__tool">Pencil / Figma</span>
+          </div>
+          <div class="ia-step__arrow">↓</div>
+
+          <div class="ia-step" data-aos="fade-up" data-aos-duration="700" data-aos-delay="150">
+            <span class="ia-step__num">04</span>
+            <span class="ia-step__title">AI Coding</span>
+            <span class="ia-step__tool">Copilot / Claude</span>
+          </div>
+          <div class="ia-step__arrow">↓</div>
+
+          <div class="ia-step" data-aos="fade-up" data-aos-duration="700" data-aos-delay="200">
+            <span class="ia-step__num">05</span>
+            <span class="ia-step__title">Automation</span>
+            <span class="ia-step__tool">n8n</span>
+          </div>
+          <div class="ia-step__arrow">↓</div>
+
+          <div class="ia-step ia-step--accent" data-aos="fade-up" data-aos-duration="700" data-aos-delay="250">
+            <span class="ia-step__num ia-step__num--dark">06</span>
+            <div class="ia-step__body">
+              <span class="ia-step__title ia-step__title--dark">Deploy</span>
+              <div class="ia-step__subtags">
+                <span class="ia-step__subtag ia-step__subtag--dark">Docker</span>
+                <span class="ia-step__subtag ia-step__subtag--dark">GitHub Actions</span>
+                <span class="ia-step__subtag ia-step__subtag--dark">Vercel / AWS</span>
+              </div>
+            </div>
+          </div>
+          <div class="ia-step__arrow">↓</div>
+
+          <div class="ia-step ia-step--border" data-aos="fade-up" data-aos-duration="700" data-aos-delay="300">
+            <span class="ia-step__num">07</span>
+            <div class="ia-step__body">
+              <span class="ia-step__title">Feedback</span>
+              <div class="ia-step__subtags">
+                <span class="ia-step__subtag">PostHog</span>
+                <span class="ia-step__subtag">Sentry</span>
+                <span class="ia-step__subtag">Hotjar</span>
+              </div>
+            </div>
+          </div>
+          <div class="ia-step__arrow">↓</div>
+
+          <div class="ia-step ia-step--accent" data-aos="fade-up" data-aos-duration="700" data-aos-delay="350">
+            <span class="ia-step__num ia-step__num--white">08</span>
+            <span class="ia-step__title ia-step__title--white">Iteration</span>
+            <span class="ia-step__tool ia-step__tool--white">↻ back to 01</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       RECURSOS
+  ============================================================ -->
+  <section class="section" id="recursos">
+    <div class="section__inner" data-aos="fade-up" data-aos-duration="800">
+      <span class="section__label">07 — RECURSOS</span>
+      <div class="recursos-head">
+        <h2 class="section__title">Recursos<br>WordPress</h2>
+        <p class="text-body recursos-desc" data-aos="fade-left" data-aos-duration="800" data-aos-delay="100">
+          Guías técnicas, plugins y themes desarrollados y liberados para la comunidad WordPress.
+        </p>
+      </div>
+    </div>
+
+    <div class="section__inner">
+      <div class="recursos-grid">
+
+        <!-- WP Security Guide -->
+        <article class="recurso-card recurso-card--with-cover" data-aos="fade-up" data-aos-duration="800" data-aos-delay="0">
+          <div class="recurso-card__body">
+            <span class="card__label">GUÍA GRATUITA</span>
+            <h3 class="recurso-card__title">Guía de Seguridad WordPress</h3>
+            <p class="recurso-card__desc">Protocolos de hardening, monitoreo proactivo, detección de malware y procedimientos de respuesta ante incidentes. Pensada para quienes enfrentan un sitio comprometido — y para quienes quieren evitarlo.</p>
+            <div class="tags">
+              <span class="tag">Hardening</span>
+              <span class="tag">Malware</span>
+              <span class="tag">WAF</span>
+              <span class="tag">Backups</span>
+              <span class="tag">Monitoreo</span>
+            </div>
+            <div class="recurso-card__actions">
+              <a href="recursos/seguridad-wordpress/guia.pdf" class="btn btn--accent" download="guia.pdf">Descargar PDF →</a>
+              <a href="recursos/seguridad-wordpress/guia.html" class="btn btn--outline">Leer online</a>
+            </div>
+          </div>
+          <div class="recurso-card__cover">
+            <div class="book-cover">
+              <div class="book-cover__inner">
+                <div class="book-cover__badge">GUÍA GRATUITA</div>
+                <div class="book-cover__stripe"></div>
+                <h3 class="book-cover__title">Guía de<br>Seguridad<br>WordPress</h3>
+                <p class="book-cover__subtitle">Prevención y Recuperación ante Ataques e Infecciones</p>
+              </div>
+              <div class="book-cover__footer">
+                <div class="book-cover__line"></div>
+                <span class="book-cover__author">Javier Rivera</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- WP Headless Mode -->
+        <article class="recurso-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="80">
+          <span class="card__label">PLUGIN GRATUITO</span>
+          <h3 class="recurso-card__title">WP Headless Mode</h3>
+          <p class="recurso-card__desc">Convierte WordPress en un CMS headless API-first. Deshabilita el frontend, filtra plugins de renderizado en requests REST y endurece la API con CORS granular, rate limiting y headers de seguridad. Ahorra 8–30 MB de RAM por request. Requiere PHP 8.0+ y WordPress 6.0+.</p>
+          <div class="tags">
+            <span class="tag">Headless</span>
+            <span class="tag">REST API</span>
+            <span class="tag">PHP 8+</span>
+            <span class="tag">WP 6+</span>
+            <span class="tag">CORS</span>
+            <span class="tag">Rate Limiting</span>
+          </div>
+          <div class="recurso-card__actions">
+            <a href="recursos/wp-headless/index.html" class="btn btn--accent">Ver documentación →</a>
+            <a href="recursos/wp-headless/wp-headless-mode.zip" class="btn btn--outline" download>Descargar ZIP</a>
+          </div>
+        </article>
+
+        <!-- BSale Plugin -->
+        <article class="recurso-card recurso-card--simple" data-aos="fade-up" data-aos-duration="800" data-aos-delay="0">
+          <span class="card__label">PLUGIN</span>
+          <h3 class="recurso-card__title">Integración BSale para WordPress</h3>
+          <p class="recurso-card__desc">Base para conectar catálogo, stock y flujos operativos con BSale desde WordPress.</p>
+          <div class="recurso-card__actions">
+            <a class="btn btn--accent" href="downloads/bsale-wordpress-plugin.zip" download>Descargar ZIP</a>
+          </div>
+        </article>
+
+        <!-- Real Estate Theme -->
+        <article class="recurso-card recurso-card--simple" data-aos="fade-up" data-aos-duration="800" data-aos-delay="120">
+          <span class="card__label">THEME</span>
+          <h3 class="recurso-card__title">Portal Inmobiliario + MercadoLibre</h3>
+          <p class="recurso-card__desc">Theme para publicar propiedades en WordPress con estructura preparada para integración con MercadoLibre.</p>
+          <div class="recurso-card__actions">
+            <a class="btn btn--accent" href="downloads/ml-real-estate-theme.zip" download>Descargar ZIP</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       CÓMO TRABAJO
+  ============================================================ -->
+  <section class="section" id="principles">
+    <div class="section__inner" data-aos="fade-up" data-aos-duration="800">
+      <span class="section__label">08 — PRINCIPLES</span>
+      <div class="como-head">
+        <h2 class="section__title">Cómo Trabajo</h2>
+        <p class="text-body como-desc" data-aos="fade-left" data-aos-duration="800" data-aos-delay="100">Mi experiencia combina tecnología con comprensión de negocio.</p>
+      </div>
+    </div>
+    <div class="section__inner">
+      <div class="principles-grid">
+        <div class="principle-card" data-aos="fade-up" data-aos-duration="700" data-aos-delay="0">
+          <span class="principle-card__num">01</span>
+          <h3 class="principle-card__title">Pensar simple</h3>
+        </div>
+        <div class="principle-card" data-aos="fade-up" data-aos-duration="700" data-aos-delay="80">
+          <span class="principle-card__num">02</span>
+          <h3 class="principle-card__title">Entender el sistema</h3>
+        </div>
+        <div class="principle-card" data-aos="fade-up" data-aos-duration="700" data-aos-delay="160">
+          <span class="principle-card__num">03</span>
+          <h3 class="principle-card__title">Prototipar rápido</h3>
+        </div>
+        <div class="principle-card" data-aos="fade-up" data-aos-duration="700" data-aos-delay="240">
+          <span class="principle-card__num">04</span>
+          <h3 class="principle-card__title">Integrar sistemas</h3>
+        </div>
+        <div class="principle-card" data-aos="fade-up" data-aos-duration="700" data-aos-delay="320">
+          <span class="principle-card__num">05</span>
+          <h3 class="principle-card__title">Resolver problemas</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       PERSONAL
+  ============================================================ -->
+  <section class="section" id="personal">
+    <div class="section__inner" data-aos="fade-up" data-aos-duration="800">
+      <span class="section__label">09 — LIFE</span>
+      <h2 class="section__title">Más Allá de la Tecnología</h2>
+    </div>
+    <div class="section__inner">
+      <div class="personal-grid">
+        <div class="personal-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="0">
+          <div class="personal-card__img" style="background-image: url('assets/img/ciclismo.jpg')"></div>
+          <div class="personal-card__body">
+            <h3 class="personal-card__title"><a href="https://www.instagram.com/p/Blk0_bZAR6G/?img_index=1" target="_blank">Ciclismo</a></h3>
+            <p class="personal-card__desc">Cruzar los Andes hacia Bariloche, subir la Cuesta Caracol. Viajes largos entre Santiago, Viña del Mar y Concón.</p>
+          </div>
+        </div>
+        <div class="personal-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+          <div class="personal-card__img" style="background-image: url('assets/img/musica.jpg')"></div>
+          <div class="personal-card__body">
+            <h3 class="personal-card__title"><a href="https://www.instagram.com/moontributo/" target="_blank">Música</a></h3>
+            <p class="personal-card__desc">Participo en una banda tributo a Pink Floyd. Me he vuelto un arqueólogo del sonido de Richard Wright. También me gusta mucho la producción musical.</p>
+          </div>
+        </div>
+        <div class="personal-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+          <div class="personal-card__img" style="background-image: url('assets/img/gatos.webp')"></div>
+          <div class="personal-card__body">
+            <h3 class="personal-card__title"><a href="https://www.instagram.com/p/Cy8_b5gOYAs/?img_index=4" target="_blank">Gatos</a></h3>
+            <p class="personal-card__desc">Rescate de gatos. Cuatro compañeros felinos rescatados.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ============================================================
+       CTA
+  ============================================================ -->
+  <section class="section section--card section--cta" id="contact">
+    <div class="section__inner section__inner--center">
+      <h2 class="cta__title" data-aos="fade-up" data-aos-duration="900">Conversemos</h2>
+      <p class="cta__desc" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+        Siempre estoy abierto a conversar sobre tecnología, proyectos interesantes,<br>
+        integraciones complejas o nuevas ideas relacionadas con inteligencia artificial.
+      </p>
+      <a href="mailto:juan.javier.rivera.cardenas@gmail.com" class="btn btn--accent" data-aos="fade-up" data-aos-duration="700" data-aos-delay="200">
+        iniciar conversación →
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <a href="#top" class="logo">
+          <span class="logo__dot"></span>
+          <span class="logo__text">jjrc.dev</span>
+        </a>
+        <nav class="footer__nav">
+          <a href="#about"      class="footer__link">about</a>
+          <a href="#experience" class="footer__link">experience</a>
+          <a href="#stack"      class="footer__link">stack</a>
+          <a href="#contact"    class="footer__link">contacto</a>
+        </nav>
+      </div>
+      <div class="footer__line"></div>
+      <div class="footer__bot">
+        <span class="footer__copy">© 2026 Javier Rivera</span>
+        <span class="footer__made">creado con amor con la ayuda de claude + pencil</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- AOS -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="assets/js/script.js?v=00000006"></script>
+</body>
+</html>

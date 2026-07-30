@@ -1,0 +1,11 @@
+# OS
+.DS_Store
+
+# Python virtualenv (local tooling for convert_pdf.py)
+.venv/
+
+# Client-confidential proposals — not for public repo
+propuestas/
+
+# Design drafts / work-in-progress, not part of the published site
+borrador/

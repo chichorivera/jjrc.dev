@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WP Headless Mode — Documentación Técnica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2>WP Headless Mode</h2>
+      <p>v1.3.1 · Documentación técnica</p>
+      <p style="margin-top:8px"><a href="tutorial.html" style="color:var(--accent);font-size:11px;font-weight:700">Tutorial de implementación →</a></p>
+    </div>
+    <nav>
+      <div class="nav-group">
+        <div class="nav-group-title">Introducción</div>
+        <a href="#que-hace">¿Qué hace?</a>
+        <a href="#instalacion">Instalación</a>
+        <a href="#arquitectura">Arquitectura</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Módulos</div>
+        <a href="#headless-core">Headless Core</a>
+        <a href="#optimizer">Optimizer</a>
+        <a href="#plugin-classifier">Plugin Classifier</a>
+        <a href="#api-enhancer">API Enhancer</a>
+        <a href="#admin-panel">Admin Panel</a>
+        <a href="#theme-mgmt">— Theme & Apariencia</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Referencia API</div>
+        <a href="#audit-api">Audit API</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Configuración</div>
+        <a href="#autenticacion">Autenticación</a>
+        <a href="#rate-limiting">Rate Limiting</a>
+        <a href="#cors">CORS</a>
+        <a href="#base-de-datos">Base de datos</a>
+        <a href="#settings-ref">Settings</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Guías</div>
+        <a href="#auditoria">Auditoría de plugins</a>
+        <a href="#autoload">Optimización autoload</a>
+        <a href="#limitaciones">Limitaciones</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Autor</div>
+        <a href="#autor">Acerca del autor</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ── Content ── -->
+  <main class="content">
+
+    <div class="doc-header">
+      <h1>WP Headless Mode <span class="version-badge">v1.3.1</span></h1>
+      <p>Plugin para WordPress que convierte una instalación estándar en un CMS headless optimizado. Requiere <strong>PHP 8.0+</strong> y <strong>WordPress 6.0+</strong>.</p>
+    </div>
+
+    <h2 id="que-hace">¿Qué hace este plugin?</h2>
+    <p>WP Headless Mode transforma WordPress en un backend API-first, desacoplando completamente el frontend del servidor. Al activarlo:</p>
+    <ul>
+      <li>Todas las URLs del frontend devuelven <strong>JSON 404</strong> en vez de HTML</li>
+      <li>Los plugins de renderizado (Elementor, page builders, caché HTML) se <strong>omiten en requests de API</strong>, ahorrando 8–30 MB de RAM por request</li>
+      <li>La REST API nativa queda endurecida con CORS granular, rate limiting y headers de seguridad</li>
+    </ul>
+
+    <h2 id="instalacion">Instalación</h2>
+    <ol>
+      <li>Copia la carpeta <code>wp-headless-mode</code> a <code>/wp-content/plugins/</code></li>
+      <li>Activa el plugin desde <strong>Plugins → Plugins instalados</strong></li>
+      <li>Ve a <strong>Headless Mode → Configuración</strong> y activa el modo headless</li>
+      <li>Configura los orígenes CORS permitidos con la URL de tu frontend</li>
+    </ol>
+
+    <h2 id="arquitectura">Arquitectura</h2>
+    <div class="filetree">
+<span class="dir">wp-headless-mode/</span>
+├── <span class="file">wp-headless-mode.php</span>         <span class="cmt">← Entry point, bootstrap, activation hooks</span>
+├── <span class="dir">includes/</span>
+│   ├── <span class="file">class-headless-core.php</span>      <span class="cmt">← Bloqueo frontend, features</span>
+│   ├── <span class="file">class-headless-optimizer.php</span> <span class="cmt">← Plugins filter, heartbeat, autoload</span>
+│   ├── <span class="file">class-plugin-classifier.php</span>  <span class="cmt">← Clasificación de plugins</span>
+│   ├── <span class="file">class-api-enhancer.php</span>       <span class="cmt">← CORS, rate limit, security headers</span>
+│   └── <span class="dir">templates/</span>
+│       └── <span class="file">headless-frontend.php</span>    <span class="cmt">← Template JSON para frontend bloqueado</span>
+├── <span class="dir">admin/</span>
+│   ├── <span class="file">class-headless-admin.php</span>     <span class="cmt">← Menú admin, AJAX, badges</span>
+│   └── <span class="dir">views/</span>
+│       ├── <span class="file">dashboard.php</span>
+│       ├── <span class="file">plugins.php</span>
+│       ├── <span class="file">settings.php</span>
+│       └── <span class="file">themes.php</span>
+├── <span class="dir">theme/</span>
+│   ├── <span class="file">style.css</span>                    <span class="cmt">← Placeholder theme header</span>
+│   └── <span class="file">index.php</span>
+└── <span class="dir">assets/</span>
+    ├── <span class="file">admin.css</span>
+    └── <span class="file">admin.js</span>
+    </div>
+
+    <h3>Flujo de arranque</h3>
+    <pre><code>plugins_loaded
+  └── wp_headless_mode_init()
+        ├── WP_Headless_Core::init()            → hooks de template y features
+        ├── WP_Headless_Optimizer::init()       → hooks de plugins y cron
+        ├── WP_Headless_API_Enhancer::init()    → hooks REST
+        └── WP_Headless_Admin::init()           → (solo is_admin()) menú y AJAX</code></pre>
+
+    <hr class="divider">
+
+    <h2 id="headless-core">Módulo: Headless Core</h2>
+    <p><em>Archivo: <code>includes/class-headless-core.php</code></em></p>
+    <p>Responsable de bloquear el frontend y eliminar ruido de WordPress.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Acción</th><th>Hook</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td>Bloquea frontend</td><td><code>template_include</code> (PHP_INT_MAX)</td><td>Devuelve headless-frontend.php → JSON 404</td></tr>
+          <tr><td>Vacía assets del theme</td><td><code>wp_enqueue_scripts</code> (PHP_INT_MAX)</td><td>Elimina todos los scripts y estilos en frontend</td></tr>
+          <tr><td>Desactiva XML-RPC</td><td><code>xmlrpc_enabled</code></td><td>Stub que responde 403 JSON</td></tr>
+          <tr><td>Desactiva embeds</td><td><code>init</code></td><td>Elimina rutas, filters y head links de oEmbed</td></tr>
+          <tr><td>Desactiva emojis</td><td><code>init</code></td><td>Elimina emoji.js y DNS prefetch de s.w.org</td></tr>
+          <tr><td>Limpia &lt;head&gt;</td><td><code>init</code></td><td>Elimina generator, shortlink, feed links, REST link</td></tr>
+          <tr><td>Añade header</td><td><code>send_headers</code></td><td><code>X-WP-Headless: 1</code> en todas las respuestas</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h4>Respuesta a requests de frontend bloqueados</h4>
+    <pre><code>{
+  <span class="key">"error"</span>:   <span class="str">"not_found"</span>,
+  <span class="key">"message"</span>: <span class="str">"This WordPress installation operates in headless mode..."</span>,
+  <span class="key">"api"</span>: {
+    <span class="key">"rest"</span>:   <span class="str">"https://tu-sitio.com/wp-json/wp/v2/"</span>,
+    <span class="key">"health"</span>: <span class="str">"https://tu-sitio.com/wp-json/headless/v1/health"</span>
+  }
+}</code></pre>
+
+    <hr class="divider">
+
+    <h2 id="optimizer">Módulo: Optimizer</h2>
+    <p><em>Archivo: <code>includes/class-headless-optimizer.php</code></em></p>
+    <h3>Filtrado de plugins en REST</h3>
+    <p>En cada request a la REST API, el Optimizer modifica la opción <code>active_plugins</code> en memoria para excluir plugins de frontend. Plugins como Elementor, WP Rocket o Jetpack <strong>nunca llegan a cargar</strong> en requests de API, ahorrando entre 8–30 MB de RAM por request.</p>
+    <pre><code><span class="cmt">// Plugins excluidos automáticamente en requests REST:</span>
+elementor, elementor-pro, beaver-builder-plugin,
+wp-super-cache, w3-total-cache, wp-rocket,
+litespeed-cache, autoptimize, wp-fastest-cache, jetpack</code></pre>
+    <div class="callout callout-info">
+      <strong>Cómo funciona</strong>
+      Los plugins marcados como <code>frontend</code> en los overrides manuales también se excluyen. El filtro actúa sobre <code>option_active_plugins</code> con prioridad 1, antes de que los plugins registren sus hooks.
+    </div>
+
+    <hr class="divider">
+
+    <h2 id="plugin-classifier">Módulo: Plugin Classifier</h2>
+    <p><em>Archivo: <code>includes/class-plugin-classifier.php</code></em></p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Clasificación</th><th>Significado</th><th>Impacto</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge badge-green">headless-ready</span></td><td>Diseñado para headless (WPGraphQL, ACF, JWT...)</td><td>Ninguno</td></tr>
+          <tr><td><span class="badge badge-blue">admin-only</span></td><td>Solo actúa en wp-admin (Wordfence, UpdraftPlus...)</td><td>Ninguno</td></tr>
+          <tr><td><span class="badge badge-yellow">api-aware</span></td><td>Tiene REST API pero también carga assets en frontend</td><td>Bajo</td></tr>
+          <tr><td><span class="badge badge-red">frontend</span></td><td>Renderizador HTML, incompatible con headless</td><td><strong>Alto</strong></td></tr>
+          <tr><td><span class="badge badge-grey">unknown</span></td><td>Sin clasificación conocida, requiere revisión manual</td><td>Medio</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="divider">
+
+    <h2 id="api-enhancer">Módulo: API Enhancer</h2>
+    <p><em>Archivo: <code>includes/class-api-enhancer.php</code></em></p>
+    <h3>Headers de seguridad en todas las respuestas REST</h3>
+    <pre><code>X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: geolocation=(), camera=(), microphone=()
+Cache-Control: no-store, no-cache, must-revalidate
+X-Headless-Mode: true
+X-Response-Time: 42ms</code></pre>
+
+    <hr class="divider">
+
+    <h2 id="admin-panel">Módulo: Admin Panel</h2>
+    <p><em>Archivo: <code>admin/class-headless-admin.php</code></em></p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sección</th><th>URL</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Dashboard</strong></td><td><code>?page=wp-headless-mode</code></td><td>Estado, stats, endpoints activos, optimización DB</td></tr>
+          <tr><td><strong>Plugins</strong></td><td><code>?page=wp-headless-plugins</code></td><td>Tabla filtrable con clasificación y override manual</td></tr>
+          <tr><td><strong>Configuración</strong></td><td><code>?page=wp-headless-settings</code></td><td>Todos los toggles y configuración</td></tr>
+          <tr><td><strong>Theme</strong></td><td><code>?page=wp-headless-theme</code></td><td>Instalar placeholder theme y limpiar themes innecesarios</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="theme-mgmt">Eliminación del menú Apariencia</h3>
+    <p>Cuando el modo headless está activo, el menú <strong>Apariencia</strong> de WordPress se elimina automáticamente del panel de administración. Esto incluye todos sus submenús: Themes, Customizer, Widgets, Menús y Theme Editor.</p>
+    <div class="callout callout-info">
+      <strong>Comportamiento dinámico</strong>
+      Si desactivas el modo headless desde Configuración, el menú Apariencia vuelve a aparecer automáticamente en la siguiente carga del admin.
+    </div>
+
+    <h3>Gestión del theme placeholder</h3>
+    <p>WordPress requiere un theme activo internamente aunque el frontend esté bloqueado. La sección <strong>Theme</strong> del menú permite instalar el placeholder mínimo (2 archivos) y eliminar todos los themes innecesarios.</p>
+
+    <hr class="divider">
+
+    <h2 id="audit-api">Referencia: Audit API</h2>
+    <p>Base: <code>/wp-json/headless/v1/</code> — Requieren usuario con capacidad <code>manage_options</code>.</p>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/plugins</span>
+        <span class="endpoint-desc">Lista de plugins clasificados</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Parámetros opcionales: <code>classification</code> (filtro por tipo) · <code>active_only=true</code></p>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="endpoint-header">
+        <span class="method method-post">POST</span>
+        <span class="endpoint-path">/plugins/{slug}/classify</span>
+        <span class="endpoint-desc">Sobrescribir clasificación</span>
+      </div>
+      <div class="endpoint-body">
+        <pre><code>{ <span class="key">"classification"</span>: <span class="str">"admin-only"</span> }</code></pre>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="endpoint-header">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/health</span>
+        <span class="endpoint-desc">Health check público</span>
+      </div>
+      <div class="endpoint-body">
+        <pre><code>{
+  <span class="key">"status"</span>:      <span class="str">"ok"</span>,
+  <span class="key">"headless"</span>:    <span class="num">true</span>,
+  <span class="key">"version"</span>:     <span class="str">"1.3.1"</span>,
+  <span class="key">"wp_version"</span>:  <span class="str">"6.7"</span>,
+  <span class="key">"php_version"</span>: <span class="str">"8.2.0"</span>,
+  <span class="key">"timestamp"</span>:   <span class="str">"2026-03-31T12:00:00+00:00"</span>
+}</code></pre>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="endpoint-header">
+        <span class="method method-get">GET</span>
+        <span class="endpoint-path">/settings</span>
+        <span class="endpoint-desc">Configuración actual</span>
+      </div>
+    </div>
+    <div class="endpoint-card">
+      <div class="endpoint-header">
+        <span class="method method-patch">PATCH</span>
+        <span class="endpoint-path">/settings</span>
+        <span class="endpoint-desc">Actualizar configuración</span>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <h2 id="autenticacion">Autenticación</h2>
+    <p>Cuando <strong>Requerir auth en REST API</strong> está activo, todos los endpoints requieren autenticación. WordPress soporta nativamente <strong>Application Passwords</strong> (desde WP 5.6):</p>
+    <pre><code><span class="cmt"># Con Application Password (usuario:app-password en base64)</span>
+curl https://tu-sitio.com/wp-json/wp/v2/posts \
+  -H <span class="str">"Authorization: Basic dXN1YXJpbzpwYXNz"</span></code></pre>
+    <div class="callout callout-tip">
+      <strong>Recomendación</strong>
+      Genera un Application Password en <strong>Usuarios → Tu perfil → Application Passwords</strong>.
+    </div>
+
+    <h2 id="rate-limiting">Rate Limiting</h2>
+    <ul>
+      <li><strong>Sin autenticación:</strong> <code>api_rate_limit_max</code> requests/hora por IP (default: 100)</li>
+      <li><strong>Autenticado:</strong> 5× el límite base</li>
+    </ul>
+    <pre><code>X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 87
+X-RateLimit-Window: 3600</code></pre>
+
+    <h2 id="cors">CORS</h2>
+    <p>Configura los orígenes desde <strong>Configuración → Orígenes CORS permitidos</strong>. Un origen por línea. Vacío = acepta cualquier origen (<code>*</code>).</p>
+    <div class="callout callout-warning">
+      <strong>Producción</strong>
+      Restringe siempre los orígenes en entornos productivos para evitar accesos no autorizados.
+    </div>
+
+    <h2 id="base-de-datos">Base de datos</h2>
+    <h3>wp_headless_ratelimit</h3>
+    <pre><code>ip            VARCHAR(45)
+endpoint      VARCHAR(255)
+hits          INT
+window_start  DATETIME      INDEX
+PRIMARY KEY (ip, endpoint)</code></pre>
+
+    <h2 id="settings-ref">Settings</h2>
+    <p>Guardadas en <code>wp_options</code> bajo la clave <code>wp_headless_settings</code>.</p>
+    <div class="settings-grid">
+      <div class="setting-item"><div class="setting-key">headless_mode</div><div class="setting-type">bool · default: true</div><div class="setting-desc">Master switch del plugin</div></div>
+      <div class="setting-item"><div class="setting-key">disable_themes</div><div class="setting-type">bool · default: true</div><div class="setting-desc">Bloquea frontend → JSON 404</div></div>
+      <div class="setting-item"><div class="setting-key">disable_xmlrpc</div><div class="setting-type">bool · default: true</div><div class="setting-desc">Desactiva XML-RPC completamente</div></div>
+      <div class="setting-item"><div class="setting-key">disable_embeds</div><div class="setting-type">bool · default: true</div><div class="setting-desc">Elimina oEmbed y rutas de embeds</div></div>
+      <div class="setting-item"><div class="setting-key">disable_emojis</div><div class="setting-type">bool · default: true</div><div class="setting-desc">Elimina emoji.js del frontend y admin</div></div>
+      <div class="setting-item"><div class="setting-key">disable_rest_open</div><div class="setting-type">bool · default: false</div><div class="setting-desc">Requiere auth en todos los endpoints REST</div></div>
+      <div class="setting-item"><div class="setting-key">api_rate_limit</div><div class="setting-type">bool · default: true</div><div class="setting-desc">Activa rate limiting</div></div>
+      <div class="setting-item"><div class="setting-key">api_rate_limit_max</div><div class="setting-type">int · default: 100</div><div class="setting-desc">Requests/hora para usuarios anónimos</div></div>
+      <div class="setting-item"><div class="setting-key">cors_origins</div><div class="setting-type">string · default: ''</div><div class="setting-desc">Orígenes permitidos, uno por línea</div></div>
+      <div class="setting-item"><div class="setting-key">jwt_auth</div><div class="setting-type">bool · default: false</div><div class="setting-desc">JWT Auth (pendiente)</div></div>
+    </div>
+
+    <hr class="divider">
+
+    <h2 id="auditoria">Auditoría de plugins</h2>
+    <p>Para sobrescribir una clasificación usa el dropdown en <strong>Plugins</strong> o la API:</p>
+    <pre><code>curl -X POST https://tu-sitio.com/wp-json/headless/v1/plugins/elementor/classify \
+  -H <span class="str">"Cookie: wordpress_logged_in_..."</span> \
+  -d <span class="str">'{"classification": "frontend"}'</span></code></pre>
+
+    <h2 id="autoload">Optimización de autoload</h2>
+    <p>Marca como <code>autoload=no</code> los siguientes patrones de <code>wp_options</code>:</p>
+    <pre><code>widget_%         <span class="cmt">→ Configuraciones de widgets</span>
+sidebars_widgets <span class="cmt">→ Sidebar configuration</span>
+%_transient_%    <span class="cmt">→ Transients</span>
+elementor%       <span class="cmt">→ Opciones de Elementor</span>
+fl_%             <span class="cmt">→ Opciones de Beaver Builder</span>
+theme_mods_%     <span class="cmt">→ Modificaciones del theme activo</span></code></pre>
+    <div class="callout callout-warning">
+      <strong>Nota</strong>
+      Esta operación no se revierte automáticamente. Si vuelves al frontend de WordPress, puede ser necesario revertirla manualmente en <code>wp_options</code>.
+    </div>
+
+    <h2 id="limitaciones">Limitaciones conocidas</h2>
+    <p>El bootstrap de WordPress siempre cargará ~200 archivos PHP y ejecutará la query de <code>wp_options</code> antes de que cualquier plugin pueda intervenir. Para reducir este overhead:</p>
+    <ul>
+      <li><strong>Bedrock</strong> (Roots.io) para una estructura más limpia</li>
+      <li><strong>Nginx + FastCGI cache</strong> para cachear respuestas de API completas</li>
+      <li><strong>Redis Object Cache</strong> para cachear el bootstrap y queries de WP</li>
+    </ul>
+    <div class="callout callout-danger">
+      <strong>Plugins de frontend con CPTs</strong>
+      Si un plugin clasificado como <code>frontend</code> registra Custom Post Types o meta fields que necesitas en la API, excluirlo en REST lo romperá. Verifica qué CPTs registra antes de marcarlo como frontend.
+    </div>
+
+    <h2 id="autor">Acerca del autor</h2>
+    <p><strong>Javier Rivera</strong> es Full Stack Developer con más de 25 años de experiencia construyendo soluciones digitales, habiendo evolucionado desde programador hasta liderazgo técnico y arquitectura de software.</p>
+    <p>Especializado en arquitecturas headless, e-commerce (WordPress, WooCommerce, Shopify, Magento), integraciones empresariales y desarrollo de APIs. Ha trabajado en proyectos en más de 6 países para clientes en educación, farmacéutica, retail, finanzas y gobierno.</p>
+    <table>
+      <thead><tr><th>Área</th><th>Tecnologías</th></tr></thead>
+      <tbody>
+        <tr><td>Backend</td><td>PHP · Node.js · Python · FastAPI</td></tr>
+        <tr><td>Frontend</td><td>JavaScript · Next.js</td></tr>
+        <tr><td>Infraestructura</td><td>Docker · AWS · Azure · DigitalOcean</td></tr>
+        <tr><td>Herramientas</td><td>Claude · GitHub Copilot · n8n</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:20px">
+      Más información en <a href="https://jjrc.dev/" target="_blank" rel="noopener">jjrc.dev</a> &nbsp;·&nbsp; <a href="mailto:hola@jjrc.dev">hola@jjrc.dev</a>
+    </p>
+
+  </main>
+</div>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>
