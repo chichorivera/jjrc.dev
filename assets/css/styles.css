@@ -291,6 +291,11 @@ a { text-decoration: none; color: inherit; }
   text-decoration: none;
 }
 
+.theme-switcher__btn--brand svg {
+  fill: currentColor;
+  stroke: none;
+}
+
 .theme-switcher--mobile {
   display: none;
   padding-top: 4px;
@@ -1768,5 +1773,65 @@ a { text-decoration: none; color: inherit; }
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;
+  }
+}
+
+/* ============================================================
+   PRINT — used both for Ctrl+P and the CV PDF export
+============================================================ */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .header,
+  .nav__mobile,
+  .hero__aura,
+  .testi-controls,
+  .testi-card__toggle {
+    display: none !important;
+  }
+
+  [data-aos],
+  .reveal-mask .section__title,
+  .reveal-mask .cta__title,
+  .hero__title-word {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .testi-viewport {
+    overflow: visible !important;
+  }
+
+  .testi-track {
+    flex-wrap: wrap !important;
+    transform: none !important;
+  }
+
+  .testi-card {
+    flex: 0 0 100% !important;
+    break-inside: avoid;
+  }
+
+  .testi-card__excerpt {
+    display: none !important;
+  }
+
+  .testi-card__full {
+    max-height: none !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+  }
+
+  .section {
+    padding: 40px 0;
+  }
+
+  .footer__nav {
+    display: none;
   }
 }

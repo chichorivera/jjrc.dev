@@ -58,6 +58,9 @@ Resources (/#recursos):
 
 Contact:
 - Email: juan.javier.rivera.cardenas@gmail.com
+- LinkedIn: https://www.linkedin.com/in/juan-javier-rivera-a677732b0/
+- GitHub: https://github.com/chichorivera
+- CV (PDF, print export of this site): /downloads/CV-Javier-Rivera.pdf
 - Site sections, in on-page order: /#hero /#about /#timeline /#techcloud /#testimonials /#experience /#stack /#ecommerce /#ai /#recursos /#principles /#personal /#contact
 
 Machine-readable notes:
