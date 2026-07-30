@@ -1586,6 +1586,10 @@ a { text-decoration: none; color: inherit; }
   color: rgba(255,255,255,0.72);
 }
 
+:root[data-theme='dark'] .ia-step__subtag {
+  color: #ffffff;
+}
+
 /* ============================================================
    AOS CUSTOM OVERRIDES
 ============================================================ */
