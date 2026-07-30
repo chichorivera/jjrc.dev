@@ -18,9 +18,8 @@
   <script>
     (function () {
       var savedTheme = localStorage.getItem('jjrc-theme');
-      if (savedTheme === 'dark' || savedTheme === 'light') {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-      }
+      var theme = (savedTheme === 'dark' || savedTheme === 'light') ? savedTheme : 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
 </head>
@@ -44,13 +43,13 @@
         </nav>
 
         <div class="theme-switcher" aria-label="Cambiar tema y ver versión llms">
-          <button type="button" class="theme-switcher__btn is-active" data-theme-toggle="light" aria-label="Ver versión clara" aria-pressed="true">
+          <button type="button" class="theme-switcher__btn" data-theme-toggle="light" aria-label="Ver versión clara" aria-pressed="false">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="4.5"></circle>
               <path d="M12 2.5v2.5M12 19v2.5M21.5 12H19M5 12H2.5M18.72 5.28l-1.77 1.77M7.05 16.95l-1.77 1.77M18.72 18.72l-1.77-1.77M7.05 7.05 5.28 5.28"></path>
             </svg>
           </button>
-          <button type="button" class="theme-switcher__btn" data-theme-toggle="dark" aria-label="Ver versión oscura" aria-pressed="false">
+          <button type="button" class="theme-switcher__btn is-active" data-theme-toggle="dark" aria-label="Ver versión oscura" aria-pressed="true">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8a8.7 8.7 0 1 0 10.3 10.3Z"></path>
             </svg>
@@ -261,6 +260,7 @@
           <span class="tech-word tech-word--md">SQL Server</span>
           <span class="tech-word tech-word--sm">ACF</span>
           <span class="tech-word tech-word--sm">WP-CLI</span>
+          <span class="tech-word tech-word--sm">Instatic</span>
           <span class="tech-word tech-word--md">Apache</span>
           <span class="tech-word tech-word--md">Nginx</span>
           <span class="tech-word tech-word--sm">LAMP Stack</span>
@@ -325,7 +325,7 @@
   <section class="section" id="testimonials">
     <div class="section__inner" data-aos="fade-up" data-aos-duration="800">
       <span class="section__label">03 — RECOMENDACIONES</span>
-      <h2 class="section__title section__title--wide">Lo Que Dicen Quienes<br>Trabajaron Conmigo</h2>
+      <h2 class="section__title section__title--wide">¿Qué Opinan<br>de Mí?</h2>
     </div>
 
     <div class="section__inner">
