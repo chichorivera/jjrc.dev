@@ -456,6 +456,7 @@ a { text-decoration: none; color: inherit; }
 ============================================================ */
 .hero {
   position: relative;
+  z-index: 0;
   overflow: hidden;
   background: #e3dbd9;
   padding: 100px var(--pad-x) 120px;
@@ -478,6 +479,34 @@ a { text-decoration: none; color: inherit; }
   filter: blur(20px);
   pointer-events: none;
   animation: auraDrift 16s ease-in-out infinite alternate;
+}
+
+/* Starfield warp — dark theme only, replaces the aura blob */
+.hero__stars {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__stars-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: none;
+  pointer-events: none;
+  background: radial-gradient(70% 60% at 50% 45%, transparent 35%, rgba(18, 16, 17, 0.92) 100%);
+}
+
+:root[data-theme='dark'] .hero__aura {
+  display: none;
+}
+
+:root[data-theme='dark'] .hero__stars,
+:root[data-theme='dark'] .hero__stars-vignette {
+  display: block;
 }
 
 .hero__label {
@@ -542,6 +571,12 @@ a { text-decoration: none; color: inherit; }
   gap: 48px;
 }
 
+.hero__left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .hero__desc {
   font-family: var(--font-body);
   font-size: clamp(15px, 1.5vw, 18px);
@@ -549,6 +584,17 @@ a { text-decoration: none; color: inherit; }
   color: var(--text-secondary);
   line-height: 1.6;
   max-width: 500px;
+}
+
+.hero__invite {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1.2vw, 15px);
+  color: var(--text-tertiary);
+  max-width: 500px;
+}
+
+.hero__cta {
+  align-self: flex-start;
 }
 
 .hero__stats {
@@ -1774,6 +1820,18 @@ a { text-decoration: none; color: inherit; }
     transform: none !important;
     opacity: 1 !important;
   }
+
+  /* The starfield canvas never draws under reduced motion (script.js
+     skips it), so fall back to the static aura even in dark theme
+     instead of showing an empty canvas. */
+  :root[data-theme='dark'] .hero__stars,
+  :root[data-theme='dark'] .hero__stars-vignette {
+    display: none !important;
+  }
+
+  :root[data-theme='dark'] .hero__aura {
+    display: block !important;
+  }
 }
 
 /* ============================================================
@@ -1788,6 +1846,8 @@ a { text-decoration: none; color: inherit; }
   .header,
   .nav__mobile,
   .hero__aura,
+  .hero__stars,
+  .hero__stars-vignette,
   .testi-controls,
   .testi-card__toggle {
     display: none !important;

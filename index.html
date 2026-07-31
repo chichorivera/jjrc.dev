@@ -14,7 +14,7 @@
   <!-- AOS -->
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
 
-  <link rel="stylesheet" href="assets/css/styles.css?v=000000076" />
+  <link rel="stylesheet" href="assets/css/styles.css?v=000000078" />
   <script>
     (function () {
       var savedTheme = localStorage.getItem('jjrc-theme');
@@ -120,6 +120,8 @@
        HERO
   ============================================================ -->
   <section class="hero" id="hero">
+    <canvas class="hero__stars" id="heroStars" aria-hidden="true"></canvas>
+    <div class="hero__stars-vignette" aria-hidden="true"></div>
     <div class="hero__aura" aria-hidden="true"></div>
 
     <div class="hero__label" data-aos="fade-down" data-aos-duration="800">
@@ -133,11 +135,19 @@
     </h1>
 
     <div class="hero__mid">
-      <p class="hero__desc" data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">
-        Más de dos décadas diseñando experiencias,<br>
-        programando e integrando soluciones digitales para<br>
-        empresas en distintos países.
-      </p>
+      <div class="hero__left">
+        <p class="hero__desc" data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">
+          Más de dos décadas diseñando experiencias,<br>
+          programando e integrando soluciones digitales para<br>
+          empresas en distintos países.
+        </p>
+        <p class="hero__invite" data-aos="fade-up" data-aos-duration="800" data-aos-delay="260">
+          ¿Tienes un proyecto en mente? Conversemos sobre cómo llevarlo adelante.
+        </p>
+        <a href="mailto:juan.javier.rivera.cardenas@gmail.com" class="btn btn--accent hero__cta" id="heroCta" data-aos="fade-up" data-aos-duration="800" data-aos-delay="320">
+          Conversemos →
+        </a>
+      </div>
 
       <div class="hero__stats" data-aos="fade-up" data-aos-duration="900" data-aos-delay="300">
         <div class="hero__stat">
@@ -902,6 +912,6 @@
 
   <!-- AOS -->
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="assets/js/script.js?v=00000007"></script>
+  <script src="assets/js/script.js?v=00000009"></script>
 </body>
 </html>
